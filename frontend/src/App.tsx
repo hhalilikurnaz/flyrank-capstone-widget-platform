@@ -6,6 +6,8 @@ import { LoginPage } from "@/pages/LoginPage";
 import { RegisterPage } from "@/pages/RegisterPage";
 import { DashboardPage } from "@/pages/DashboardPage";
 import { WidgetsPage } from "@/pages/WidgetsPage";
+import { NewWidgetPage } from "@/pages/NewWidgetPage";
+import { WidgetDetailPage } from "@/pages/WidgetDetailPage";
 
 export default function App() {
   return (
@@ -19,6 +21,8 @@ export default function App() {
             <Route element={<Layout />}>
               <Route path="/" element={<DashboardPage />} />
               <Route path="/widgets" element={<WidgetsPage />} />
+              <Route path="/widgets/new" element={<NewWidgetPage />} />
+              <Route path="/widgets/:id" element={<WidgetDetailPage />} />
             </Route>
           </Route>
 
