@@ -6,6 +6,7 @@ import { authRouter } from "@/modules/auth/routes";
 import { widgetsRouter } from "@/modules/widgets/routes";
 import { submissionsRouter } from "@/modules/submissions/routes";
 import { deliveryRouter } from "@/modules/delivery/routes";
+import { dashboardRouter } from "@/modules/dashboard/routes";
 
 export function createApp() {
   const app = express();
@@ -25,8 +26,7 @@ export function createApp() {
   app.use("/api/auth", appCors, authRouter);
   app.use("/api/widgets", appCors, widgetsRouter);
   app.use("/api/submissions", publicCors, submissionsRouter);
-
-  // Module routers (dashboard) are mounted here as each one ships.
+  app.use("/api/dashboard", appCors, dashboardRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
