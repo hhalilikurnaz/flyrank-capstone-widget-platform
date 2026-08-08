@@ -1,7 +1,8 @@
 import { AppError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 import { enrichIp } from "@/modules/enrichment/enrich";
-import { findActiveWidgetById } from "@/modules/widgets/repository";
+import { notifySubmissionSafely } from "@/modules/notifications/service";
+import { findActiveWidgetWithTenantById } from "@/modules/widgets/repository";
 import type { WidgetField } from "@/modules/widgets/schema";
 import * as submissionRepository from "./repository";
 import type { CreateSubmissionInput } from "./schema";
@@ -25,7 +26,7 @@ function validateAgainstWidgetFields(fields: WidgetField[], data: Record<string,
 }
 
 export async function submitToWidget(input: CreateSubmissionInput, ip: string): Promise<SubmitResult> {
-  const widget = await findActiveWidgetById(input.widgetId);
+  const widget = await findActiveWidgetWithTenantById(input.widgetId);
   if (!widget) {
     throw AppError.notFound("Widget not found or inactive");
   }
@@ -52,6 +53,11 @@ export async function submitToWidget(input: CreateSubmissionInput, ip: string): 
     country: geo.country,
     city: geo.city,
   });
+
+  // Safe side effect: notifySubmissionSafely swallows its own errors, so a
+  // dead SMTP server can never turn this already-stored submission into a
+  // failed response.
+  await notifySubmissionSafely(widget.tenant.email, widget.title, submission.id);
 
   return { spam: false, id: submission.id, createdAt: submission.createdAt };
 }

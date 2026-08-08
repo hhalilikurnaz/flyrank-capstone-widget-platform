@@ -14,6 +14,12 @@ export function findActiveWidgetById(id: string) {
   return prisma.widget.findFirst({ where: { id, isActive: true } });
 }
 
+// Used by the submission pipeline, which needs the owner's email for the
+// new-submission notification side effect.
+export function findActiveWidgetWithTenantById(id: string) {
+  return prisma.widget.findFirst({ where: { id, isActive: true }, include: { tenant: true } });
+}
+
 export function createWidget(tenantId: string, input: CreateWidgetInput) {
   return prisma.widget.create({ data: { ...input, tenantId } });
 }

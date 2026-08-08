@@ -35,6 +35,6 @@ export function errorHandler(err: unknown, req: Request, res: Response, next: Ne
     return;
   }
 
-  logger.error("Unhandled error", { message: (err as Error)?.message, stack: (err as Error)?.stack });
+  logger.error("Unhandled error", { error: (err as Error)?.message, stack: (err as Error)?.stack });
   res.status(500).json({ error: { code: "INTERNAL_ERROR", message: "Something went wrong" } });
 }

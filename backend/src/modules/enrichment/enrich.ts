@@ -20,7 +20,7 @@ export async function enrichIp(ip: string, providers: GeoProvider[] = defaultCha
       logger.warn("Geo provider failed, trying next in chain", {
         provider: provider.name,
         ip,
-        message: (err as Error)?.message,
+        error: (err as Error)?.message,
       });
     }
   }
