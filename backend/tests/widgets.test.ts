@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import request from "supertest";
 import { createApp } from "@/app";
-import { createWidget, registerTenant } from "./helpers";
+import { createWidget, registerTenant, registerTenantWithWidget } from "./helpers";
 
 const app = createApp();
 
@@ -9,6 +9,31 @@ describe("widget management API", () => {
   it("rejects requests without a valid token", async () => {
     const res = await request(app).get("/api/widgets");
     expect(res.status).toBe(401);
+  });
+
+  it("answers a PATCH preflight with the dashboard's CORS policy, not the public one", async () => {
+    // Regression test: publicCors used to be mounted app-wide with no path
+    // filter (for the public /:id/config route), which meant it answered
+    // every OPTIONS preflight in the whole app -- including this one --
+    // with its restricted GET/POST/OPTIONS methods list, silently breaking
+    // PATCH/DELETE from the real dashboard frontend. Caught via a real
+    // browser, not curl (curl doesn't send preflight).
+    const res = await request(app)
+      .options("/api/widgets/00000000-0000-0000-0000-000000000000")
+      .set("Origin", "http://localhost:5173")
+      .set("Access-Control-Request-Method", "PATCH");
+    expect(res.status).toBe(204);
+    expect(res.headers["access-control-allow-methods"]).toContain("PATCH");
+  });
+
+  it("serves widget config publicly with its own CORS, without exposing the rest of the router", async () => {
+    const { widget } = await registerTenantWithWidget(app, "widgets-config-cors");
+    const res = await request(app)
+      .options(`/api/widgets/${widget.id}/config`)
+      .set("Origin", "http://a-site-we-dont-control.example")
+      .set("Access-Control-Request-Method", "GET");
+    expect(res.status).toBe(204);
+    expect(res.headers["access-control-allow-origin"]).toBe("*");
   });
 
   it("rejects an invalid create payload", async () => {

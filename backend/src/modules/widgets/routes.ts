@@ -1,12 +1,43 @@
 import { Router } from "express";
 import { asyncHandler } from "@/lib/asyncHandler";
 import { requireAuth } from "@/middleware/auth";
+import { appCors, publicCors } from "@/middleware/cors";
+import { AppError } from "@/lib/errors";
 import { createWidgetSchema, updateWidgetSchema } from "./schema";
 import * as widgetService from "./service";
 import { buildEmbedSnippet } from "./embed";
+import { findActiveWidgetById } from "./repository";
 
 export const widgetsRouter = Router();
 
+// Public delivery path: registered before appCors/requireAuth below, and
+// CORS'd per-route (get + options) rather than as a blanket app-level
+// middleware, so it can be public without opening up the rest of this
+// router (see delivery/routes.ts for why that matters).
+widgetsRouter.get(
+  "/:id/config",
+  publicCors,
+  asyncHandler(async (req, res) => {
+    const widget = await findActiveWidgetById(req.params.id!);
+    if (!widget) {
+      throw AppError.notFound("Widget not found or inactive");
+    }
+
+    res.set("Cache-Control", "public, max-age=60");
+    res.json({
+      id: widget.id,
+      type: widget.type,
+      title: widget.title,
+      description: widget.description,
+      fields: widget.fields,
+      buttonText: widget.buttonText,
+      displayOptions: widget.displayOptions,
+    });
+  }),
+);
+widgetsRouter.options("/:id/config", publicCors);
+
+widgetsRouter.use(appCors);
 widgetsRouter.use(requireAuth);
 
 widgetsRouter.get(

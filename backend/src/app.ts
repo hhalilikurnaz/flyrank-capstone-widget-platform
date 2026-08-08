@@ -23,12 +23,14 @@ export function createApp() {
     res.json({ status: "ok", uptime: process.uptime() });
   });
 
-  // Registered before /api/widgets so the public GET .../config route wins
-  // over the auth-gated widgetsRouter mounted at the same prefix.
-  app.use(publicCors, deliveryRouter);
+  // deliveryRouter and widgetsRouter apply CORS per-route internally (see
+  // their source) rather than here — a bare app.use(cors(), router) with no
+  // path applies to every request in the app, not just that router's own
+  // routes, which previously broke preflight for unrelated endpoints.
+  app.use(deliveryRouter);
 
   app.use("/api/auth", appCors, authRouter);
-  app.use("/api/widgets", appCors, widgetsRouter);
+  app.use("/api/widgets", widgetsRouter);
   app.use("/api/submissions", publicCors, submissionsRouter);
   app.use("/api/dashboard", appCors, dashboardRouter);
 
