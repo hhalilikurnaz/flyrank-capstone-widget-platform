@@ -1,8 +1,11 @@
 import { AppError } from "@/lib/errors";
+import { logger } from "@/lib/logger";
 import { findActiveWidgetById } from "@/modules/widgets/repository";
 import type { WidgetField } from "@/modules/widgets/schema";
 import * as submissionRepository from "./repository";
 import type { CreateSubmissionInput } from "./schema";
+
+export type SubmitResult = { spam: true } | { spam: false; id: string; createdAt: Date };
 
 function validateAgainstWidgetFields(fields: WidgetField[], data: Record<string, string>) {
   const allowedNames = new Set(fields.map((f) => f.name));
@@ -20,10 +23,18 @@ function validateAgainstWidgetFields(fields: WidgetField[], data: Record<string,
   }
 }
 
-export async function submitToWidget(input: CreateSubmissionInput, ip: string) {
+export async function submitToWidget(input: CreateSubmissionInput, ip: string): Promise<SubmitResult> {
   const widget = await findActiveWidgetById(input.widgetId);
   if (!widget) {
     throw AppError.notFound("Widget not found or inactive");
+  }
+
+  // Honeypot: a hidden field real visitors never see or fill (styled off-screen
+  // by the widget SDK). A bot that blindly fills every input trips it. We
+  // report success without touching the DB so the bot has no signal to adapt to.
+  if (input.website.trim().length > 0) {
+    logger.warn("Dropped honeypot-triggered submission", { widgetId: widget.id, ip });
+    return { spam: true };
   }
 
   validateAgainstWidgetFields(widget.fields as unknown as WidgetField[], input.data);
@@ -35,5 +46,5 @@ export async function submitToWidget(input: CreateSubmissionInput, ip: string) {
     ip,
   });
 
-  return submission;
+  return { spam: false, id: submission.id, createdAt: submission.createdAt };
 }
