@@ -1,0 +1,31 @@
+# Evaluator manifest — see README.md for human-readable setup instructions.
+name: flyrank-capstone-widget-platform
+run: docker compose up -d && npm install && npm run dev:backend
+seed: npm run seed --workspace backend
+test: npm run test --workspace backend
+base_url: http://localhost:4000
+frontend_url: http://localhost:5173
+
+endpoints:
+  - method: POST
+    path: /api/auth/register
+  - method: POST
+    path: /api/auth/login
+  - method: GET
+    path: /api/widgets
+    auth: bearer
+  - method: POST
+    path: /api/widgets
+    auth: bearer
+  - method: GET
+    path: /api/widgets/:id/embed
+    auth: bearer
+  - method: GET
+    path: /widget.js
+  - method: GET
+    path: /api/widgets/:id/config
+  - method: POST
+    path: /api/submissions
+  - method: GET
+    path: /api/dashboard/stats
+    auth: bearer
