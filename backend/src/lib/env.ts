@@ -8,6 +8,7 @@ const envSchema = z.object({
   JWT_SECRET: z.string().min(16, "JWT_SECRET must be at least 16 characters"),
   JWT_EXPIRES_IN: z.string().default("7d"),
   FRONTEND_URL: z.string().default("http://localhost:5173"),
+  PUBLIC_API_URL: z.string().default("http://localhost:4000"),
   SMTP_HOST: z.string().default("localhost"),
   SMTP_PORT: z.coerce.number().default(1025),
   SMTP_FROM: z.string().default("no-reply@widget-platform.local"),

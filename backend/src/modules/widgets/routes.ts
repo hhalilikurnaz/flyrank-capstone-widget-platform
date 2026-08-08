@@ -3,6 +3,7 @@ import { asyncHandler } from "@/lib/asyncHandler";
 import { requireAuth } from "@/middleware/auth";
 import { createWidgetSchema, updateWidgetSchema } from "./schema";
 import * as widgetService from "./service";
+import { buildEmbedSnippet } from "./embed";
 
 export const widgetsRouter = Router();
 
@@ -30,6 +31,14 @@ widgetsRouter.get(
   asyncHandler(async (req, res) => {
     const widget = await widgetService.getWidget(req.params.id!, req.tenantId!);
     res.json({ widget });
+  }),
+);
+
+widgetsRouter.get(
+  "/:id/embed",
+  asyncHandler(async (req, res) => {
+    const widget = await widgetService.getWidget(req.params.id!, req.tenantId!);
+    res.json({ snippet: buildEmbedSnippet(widget.id) });
   }),
 );
 
