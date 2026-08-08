@@ -1,11 +1,13 @@
 import { z } from "zod";
 
-const widgetFieldSchema = z.object({
+export const widgetFieldSchema = z.object({
   name: z.string().trim().min(1).max(60),
   label: z.string().trim().min(1).max(120),
   type: z.enum(["text", "email", "phone", "textarea"]),
   required: z.boolean().default(false),
 });
+
+export type WidgetField = z.infer<typeof widgetFieldSchema>;
 
 const displayOptionsSchema = z
   .object({

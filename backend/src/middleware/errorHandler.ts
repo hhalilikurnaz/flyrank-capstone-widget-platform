@@ -27,6 +27,14 @@ export function errorHandler(err: unknown, req: Request, res: Response, next: Ne
     return;
   }
 
+  // body-parser throws a plain error (not AppError) when the request body
+  // exceeds express.json({ limit }) — normalize it to our JSON error shape.
+  const maybeHttpError = err as { type?: string; status?: number };
+  if (maybeHttpError.type === "entity.too.large" || maybeHttpError.status === 413) {
+    res.status(413).json({ error: { code: "PAYLOAD_TOO_LARGE", message: "Request body too large" } });
+    return;
+  }
+
   logger.error("Unhandled error", { message: (err as Error)?.message, stack: (err as Error)?.stack });
   res.status(500).json({ error: { code: "INTERNAL_ERROR", message: "Something went wrong" } });
 }
