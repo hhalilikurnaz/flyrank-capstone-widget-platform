@@ -9,6 +9,10 @@ const envSchema = z.object({
   JWT_EXPIRES_IN: z.string().default("7d"),
   FRONTEND_URL: z.string().default("http://localhost:5173"),
   PUBLIC_API_URL: z.string().default("http://localhost:4000"),
+
+  RATE_LIMIT_WINDOW_MS: z.coerce.number().default(60_000),
+  RATE_LIMIT_MAX_PER_IP: z.coerce.number().default(20),
+  RATE_LIMIT_MAX_PER_WIDGET: z.coerce.number().default(60),
   SMTP_HOST: z.string().default("localhost"),
   SMTP_PORT: z.coerce.number().default(1025),
   SMTP_FROM: z.string().default("no-reply@widget-platform.local"),
