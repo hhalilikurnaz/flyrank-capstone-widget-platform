@@ -12,7 +12,11 @@ export function createApp() {
   const app = express();
 
   app.disable("x-powered-by");
-  app.set("trust proxy", true);
+  // Trust exactly one hop (the reverse proxy / load balancer in front of
+  // this service). `true` would trust the entire X-Forwarded-For chain,
+  // which express-rate-limit correctly flags as spoofable — a client could
+  // prepend arbitrary IPs to dodge per-IP rate limiting.
+  app.set("trust proxy", 1);
   app.use(express.json({ limit: "100kb" }));
 
   app.get("/health", (_req: Request, res: Response) => {

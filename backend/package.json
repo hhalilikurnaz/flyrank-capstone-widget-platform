@@ -9,13 +9,14 @@
     "start": "node dist/server.js",
     "test": "vitest run",
     "test:watch": "vitest",
-    "lint": "eslint src",
+    "lint": "eslint src tests",
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p src/widget-sdk/tsconfig.json",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "seed": "tsx prisma/seed.ts",
     "build:widget-sdk": "tsx src/widget-sdk/build.ts",
-    "predev": "npm run build:widget-sdk"
+    "predev": "npm run build:widget-sdk",
+    "pretest": "npm run build:widget-sdk"
   },
   "dependencies": {
     "@prisma/client": "^6.1.0",
@@ -37,10 +38,12 @@
     "@types/nodemailer": "^6.4.17",
     "@types/supertest": "^6.0.2",
     "esbuild": "^0.24.0",
+    "eslint": "^9.39.5",
     "prisma": "^6.1.0",
     "supertest": "^7.0.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
+    "typescript-eslint": "^8.66.0",
     "vitest": "^2.1.8"
   }
 }
