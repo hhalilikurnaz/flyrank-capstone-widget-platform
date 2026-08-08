@@ -1,6 +1,7 @@
 import express from "express";
 import type { Request, Response } from "express";
 import { errorHandler, notFoundHandler } from "@/middleware/errorHandler";
+import { authRouter } from "@/modules/auth/routes";
 
 export function createApp() {
   const app = express();
@@ -12,7 +13,9 @@ export function createApp() {
     res.json({ status: "ok", uptime: process.uptime() });
   });
 
-  // Module routers (auth, widgets, submissions, delivery, dashboard) are
+  app.use("/api/auth", authRouter);
+
+  // Module routers (widgets, submissions, delivery, dashboard) are
   // mounted here as each one ships.
 
   app.use(notFoundHandler);
