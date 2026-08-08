@@ -13,6 +13,8 @@ const envSchema = z.object({
   RATE_LIMIT_WINDOW_MS: z.coerce.number().default(60_000),
   RATE_LIMIT_MAX_PER_IP: z.coerce.number().default(20),
   RATE_LIMIT_MAX_PER_WIDGET: z.coerce.number().default(60),
+
+  GEO_PROVIDER_TIMEOUT_MS: z.coerce.number().default(2000),
   SMTP_HOST: z.string().default("localhost"),
   SMTP_PORT: z.coerce.number().default(1025),
   SMTP_FROM: z.string().default("no-reply@widget-platform.local"),

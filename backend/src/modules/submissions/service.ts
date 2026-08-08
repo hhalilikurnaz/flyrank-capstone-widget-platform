@@ -1,5 +1,6 @@
 import { AppError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
+import { enrichIp } from "@/modules/enrichment/enrich";
 import { findActiveWidgetById } from "@/modules/widgets/repository";
 import type { WidgetField } from "@/modules/widgets/schema";
 import * as submissionRepository from "./repository";
@@ -39,11 +40,17 @@ export async function submitToWidget(input: CreateSubmissionInput, ip: string): 
 
   validateAgainstWidgetFields(widget.fields as unknown as WidgetField[], input.data);
 
+  // Enrichment degrades gracefully (see enrichIp) — it never throws, so a
+  // dead geo provider can never turn into a failed submission.
+  const geo = await enrichIp(ip);
+
   const submission = await submissionRepository.createSubmission({
     widgetId: widget.id,
     tenantId: widget.tenantId,
     data: input.data,
     ip,
+    country: geo.country,
+    city: geo.city,
   });
 
   return { spam: false, id: submission.id, createdAt: submission.createdAt };
