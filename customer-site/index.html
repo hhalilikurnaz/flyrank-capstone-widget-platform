@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Acme Bakery — a website we don't control</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font: 16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: #2b2118;
+      background: #fffaf3;
+    }
+    header {
+      padding: 20px 32px;
+      border-bottom: 1px solid #ecdfcb;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header .logo { font-weight: 700; font-size: 20px; }
+    main { max-width: 720px; margin: 0 auto; padding: 64px 24px; }
+    h1 { font-size: 32px; margin-bottom: 8px; }
+    p.lede { opacity: .75; margin-bottom: 32px; }
+    .badge {
+      display: inline-block;
+      background: #2b2118;
+      color: #fffaf3;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 16px;
+    }
+    .loader {
+      margin-top: 48px;
+      padding: 20px;
+      border: 1px dashed #d8c6a8;
+      border-radius: 12px;
+      background: #fff;
+    }
+    .loader h2 { margin-top: 0; font-size: 15px; }
+    .loader label { display: block; font-size: 13px; margin-bottom: 6px; opacity: .8; }
+    .loader input {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #d8c6a8;
+      border-radius: 6px;
+      font: inherit;
+      margin-bottom: 10px;
+    }
+    .loader button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      background: #4f46e5;
+      color: #fff;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .loader small { display: block; margin-top: 10px; opacity: .6; }
+    code { background: #f2e8d8; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">🥐 Acme Bakery</div>
+    <div>Fresh bread, delivered daily</div>
+  </header>
+
+  <main>
+    <span class="badge">This page is served from a different origin than the widget API</span>
+    <h1>Sourdough that ships nationwide.</h1>
+    <p class="lede">
+      This is a plain, dumb HTML page with no backend of its own — exactly the kind
+      of site a widget-platform customer would paste our embed snippet into.
+    </p>
+
+    <div class="loader">
+      <h2>Load a widget (demo control panel — not part of the embed itself)</h2>
+      <label for="api-base">Widget API base URL</label>
+      <input id="api-base" value="http://localhost:4000" />
+      <label for="widget-id">Widget ID</label>
+      <input id="widget-id" placeholder="paste a widget id from the dashboard" />
+      <button id="load-btn" type="button">Load widget</button>
+      <small>
+        Create a widget via the dashboard (or <code>npm run seed --workspace backend</code>),
+        copy its id here, and click Load — this injects the exact one-line
+        <code>&lt;script&gt;</code> snippet the dashboard hands out.
+      </small>
+    </div>
+  </main>
+
+  <script>
+    document.getElementById("load-btn").addEventListener("click", function () {
+      var apiBase = document.getElementById("api-base").value.trim().replace(/\/$/, "");
+      var widgetId = document.getElementById("widget-id").value.trim();
+      if (!widgetId) return alert("Paste a widget id first.");
+
+      var existing = document.getElementById("wp-embed-script");
+      if (existing) existing.remove();
+
+      var script = document.createElement("script");
+      script.id = "wp-embed-script";
+      script.src = apiBase + "/widget.v1.js?id=" + encodeURIComponent(widgetId);
+      script.async = true;
+      document.body.appendChild(script);
+    });
+  </script>
+</body>
+</html>
