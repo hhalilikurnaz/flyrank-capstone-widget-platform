@@ -2,6 +2,7 @@ import express from "express";
 import type { Request, Response } from "express";
 import { errorHandler, notFoundHandler } from "@/middleware/errorHandler";
 import { authRouter } from "@/modules/auth/routes";
+import { widgetsRouter } from "@/modules/widgets/routes";
 
 export function createApp() {
   const app = express();
@@ -14,8 +15,9 @@ export function createApp() {
   });
 
   app.use("/api/auth", authRouter);
+  app.use("/api/widgets", widgetsRouter);
 
-  // Module routers (widgets, submissions, delivery, dashboard) are
+  // Module routers (submissions, delivery, dashboard) are
   // mounted here as each one ships.
 
   app.use(notFoundHandler);
