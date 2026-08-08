@@ -5,6 +5,7 @@ import { appCors, publicCors } from "@/middleware/cors";
 import { authRouter } from "@/modules/auth/routes";
 import { widgetsRouter } from "@/modules/widgets/routes";
 import { submissionsRouter } from "@/modules/submissions/routes";
+import { deliveryRouter } from "@/modules/delivery/routes";
 
 export function createApp() {
   const app = express();
@@ -17,11 +18,15 @@ export function createApp() {
     res.json({ status: "ok", uptime: process.uptime() });
   });
 
+  // Registered before /api/widgets so the public GET .../config route wins
+  // over the auth-gated widgetsRouter mounted at the same prefix.
+  app.use(publicCors, deliveryRouter);
+
   app.use("/api/auth", appCors, authRouter);
   app.use("/api/widgets", appCors, widgetsRouter);
   app.use("/api/submissions", publicCors, submissionsRouter);
 
-  // Module routers (delivery, dashboard) are mounted here as each one ships.
+  // Module routers (dashboard) are mounted here as each one ships.
 
   app.use(notFoundHandler);
   app.use(errorHandler);
