@@ -123,9 +123,10 @@ function buildForm(config: WidgetConfig, apiBase: string, box: HTMLElement) {
   submitBtn.textContent = config.buttonText;
   form.appendChild(submitBtn);
 
+  // Appended to the box, not the form: hiding the form on success must not
+  // also hide the confirmation message the user needs to see.
   const msg = document.createElement("div");
   msg.className = `${CLASS_PREFIX}-msg`;
-  form.appendChild(msg);
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -156,7 +157,7 @@ function buildForm(config: WidgetConfig, apiBase: string, box: HTMLElement) {
     }
   });
 
-  box.appendChild(form);
+  box.append(form, msg);
 }
 
 function mount(config: WidgetConfig, apiBase: string, host: HTMLElement | null) {
