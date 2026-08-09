@@ -11,6 +11,16 @@ export interface DisplayOptions {
   position?: "bottom-right" | "bottom-left" | "center" | "inline";
   delaySeconds?: number;
   theme?: "light" | "dark";
+  primaryColor?: string;
+}
+
+export interface WidgetDraft {
+  type: WidgetType;
+  title: string;
+  description: string;
+  buttonText: string;
+  fields: WidgetField[];
+  displayOptions: Required<DisplayOptions>;
 }
 
 export interface Widget {
