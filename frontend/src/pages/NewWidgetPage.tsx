@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { api, ApiError } from "@/lib/api";
 import type { Widget, WidgetField, WidgetType } from "@/lib/types";
 import { Button } from "@/components/ui/Button";
@@ -48,7 +48,10 @@ export function NewWidgetPage() {
 
   return (
     <div className="mx-auto max-w-2xl">
-      <h1 className="text-xl font-semibold text-slate-900">New widget</h1>
+      <Link to="/widgets" className="text-sm text-slate-500 hover:text-slate-800">
+        ← Back to widgets
+      </Link>
+      <h1 className="mt-2 text-xl font-semibold text-slate-900">New widget</h1>
       <p className="mt-1 text-sm text-slate-500">Configure the form your visitors will see.</p>
 
       <form onSubmit={onSubmit} className="mt-6">

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { api, ApiError } from "@/lib/api";
 import type { Widget, WidgetField, WidgetType } from "@/lib/types";
 import { Button } from "@/components/ui/Button";
@@ -79,12 +79,26 @@ export function WidgetDetailPage() {
     }
   }
 
-  if (loadError) return <ErrorBanner message={loadError} />;
+  if (loadError) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <Link to="/widgets" className="text-sm text-slate-500 hover:text-slate-800">
+          ← Back to widgets
+        </Link>
+        <div className="mt-4">
+          <ErrorBanner message={loadError} />
+        </div>
+      </div>
+    );
+  }
   if (!widget) return <PageSpinner />;
 
   return (
     <div className="mx-auto max-w-2xl">
-      <div className="flex items-center justify-between">
+      <Link to="/widgets" className="text-sm text-slate-500 hover:text-slate-800">
+        ← Back to widgets
+      </Link>
+      <div className="mt-2 flex items-center justify-between">
         <div>
           <h1 className="text-xl font-semibold text-slate-900">{widget.title}</h1>
           <p className="mt-1 text-sm text-slate-500">Edit this widget and grab its embed snippet.</p>
