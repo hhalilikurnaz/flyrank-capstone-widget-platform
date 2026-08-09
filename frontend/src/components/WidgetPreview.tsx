@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { motion, type TargetAndTransition } from "framer-motion";
 import type { WidgetDraft } from "@/lib/types";
+import { DevicePreviewToggle, type PreviewDevice } from "@/components/DevicePreviewToggle";
 
 /**
  * Pixel-for-pixel-ish replica of the real widget SDK's rendered output
@@ -144,36 +146,54 @@ function WidgetBox({ draft }: { draft: WidgetDraft }) {
   );
 }
 
+// Frame widths only — the widget box's own max-width: calc(100% - 32px)
+// (see WidgetBox) does the realistic squeezing against whichever frame
+// width is active, same as it would on a real narrow viewport.
+const FRAME_WIDTH: Record<PreviewDevice, number> = { desktop: 100, tablet: 76, mobile: 56 };
+
 export function WidgetPreview({ draft }: { draft: WidgetDraft }) {
+  const [device, setDevice] = useState<PreviewDevice>("desktop");
   const isInline = draft.displayOptions.position === "inline";
 
   return (
-    <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
-      <div className="flex items-center gap-1.5 border-b border-slate-100 bg-slate-50 px-3 py-2">
-        <span className="h-2.5 w-2.5 rounded-full bg-red-300" />
-        <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
-        <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
-        <span className="ml-2 flex-1 truncate rounded bg-white px-2 py-0.5 text-center text-[11px] text-slate-400 ring-1 ring-slate-200">
-          yourwebsite.com
-        </span>
+    <div>
+      <div className="mb-2 flex items-center justify-between">
+        <p className="text-xs font-medium uppercase tracking-wide text-slate-400">Preview</p>
+        <DevicePreviewToggle value={device} onChange={setDevice} />
       </div>
 
-      <div className="relative min-h-[340px] bg-[#f6f6f4] p-4">
-        <div className="space-y-2 opacity-40">
-          <div className="h-3 w-2/3 rounded bg-slate-300" />
-          <div className="h-3 w-1/2 rounded bg-slate-300" />
-          <div className="mt-4 h-20 rounded bg-slate-200" />
-          <div className="h-3 w-5/6 rounded bg-slate-300" />
-          <div className="h-3 w-3/4 rounded bg-slate-300" />
-        </div>
-
-        {isInline ? (
-          <div className="mt-4">
-            <WidgetBox draft={draft} />
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div
+          className="mx-auto overflow-hidden transition-[width] duration-300"
+          style={{ width: `${FRAME_WIDTH[device]}%` }}
+        >
+          <div className="flex items-center gap-1.5 border-b border-slate-100 bg-slate-50 px-3 py-2">
+            <span className="h-2.5 w-2.5 rounded-full bg-red-300" />
+            <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
+            <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
+            <span className="ml-2 flex-1 truncate rounded bg-white px-2 py-0.5 text-center text-[11px] text-slate-400 ring-1 ring-slate-200">
+              yourwebsite.com
+            </span>
           </div>
-        ) : (
-          <WidgetBox draft={draft} />
-        )}
+
+          <div className="relative min-h-[340px] bg-[#f6f6f4] p-4">
+            <div className="space-y-2 opacity-40">
+              <div className="h-3 w-2/3 rounded bg-slate-300" />
+              <div className="h-3 w-1/2 rounded bg-slate-300" />
+              <div className="mt-4 h-20 rounded bg-slate-200" />
+              <div className="h-3 w-5/6 rounded bg-slate-300" />
+              <div className="h-3 w-3/4 rounded bg-slate-300" />
+            </div>
+
+            {isInline ? (
+              <div className="mt-4">
+                <WidgetBox draft={draft} />
+              </div>
+            ) : (
+              <WidgetBox draft={draft} />
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );

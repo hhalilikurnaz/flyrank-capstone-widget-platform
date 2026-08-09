@@ -130,7 +130,6 @@ export function NewWidgetPage() {
         </div>
 
         <div className="lg:sticky lg:top-8 lg:self-start">
-          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400">Live preview</p>
           <WidgetPreview draft={draft} />
         </div>
       </form>
