@@ -1,4 +1,12 @@
-import { AlignCenter, CornerDownLeft, CornerDownRight, MoonStar, Rows3, Sun } from "lucide-react";
+import {
+  AlignCenter,
+  CaseSensitive,
+  CornerDownLeft,
+  CornerDownRight,
+  MoonStar,
+  Rows3,
+  Sun,
+} from "lucide-react";
 import type { DisplayOptions } from "@/lib/types";
 import { Input, Label } from "@/components/ui/Input";
 
@@ -13,6 +21,65 @@ const positions: { value: Required4["position"]; label: string; icon: typeof Ali
 
 const colorSwatches = ["#4f46e5", "#e34948", "#1baf7a", "#eda100", "#4a3aa7", "#0b0b0b"];
 
+const fontOptions: { value: Required4["fontFamily"]; label: string; stack: string }[] = [
+  { value: "system", label: "System", stack: "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" },
+  { value: "serif", label: "Serif", stack: "Georgia,Cambria,'Times New Roman',serif" },
+  { value: "rounded", label: "Rounded", stack: "'SF Pro Rounded',ui-rounded,'Segoe UI',sans-serif" },
+  { value: "mono", label: "Mono", stack: "ui-monospace,SFMono-Regular,Menlo,Consolas,monospace" },
+];
+
+const shadowOptions: { value: Required4["shadow"]; label: string }[] = [
+  { value: "none", label: "None" },
+  { value: "soft", label: "Soft" },
+  { value: "medium", label: "Medium" },
+  { value: "strong", label: "Strong" },
+];
+
+const animationOptions: { value: Required4["animation"]; label: string }[] = [
+  { value: "none", label: "None" },
+  { value: "fade", label: "Fade" },
+  { value: "slide-up", label: "Slide up" },
+  { value: "bounce", label: "Bounce" },
+];
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <div className="border-t border-slate-100 pt-5 first:border-t-0 first:pt-0">
+      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">{title}</p>
+      {children}
+    </div>
+  );
+}
+
+function SegmentedGroup<T extends string>({
+  options,
+  value,
+  onChange,
+}: {
+  options: { value: T; label: string }[];
+  value: T;
+  onChange: (v: T) => void;
+}) {
+  return (
+    <div className="flex flex-wrap gap-1.5">
+      {options.map((opt) => (
+        <button
+          key={opt.value}
+          type="button"
+          onClick={() => onChange(opt.value)}
+          className={`rounded-md border px-2.5 py-1.5 text-xs font-medium transition-colors ${
+            value === opt.value
+              ? "border-indigo-500 bg-indigo-50 text-indigo-700"
+              : "border-slate-200 text-slate-600 hover:border-slate-300"
+          }`}
+        >
+          {opt.label}
+        </button>
+      ))}
+    </div>
+  );
+}
+
 export function DisplayOptionsEditor({
   value,
   onChange,
@@ -26,96 +93,147 @@ export function DisplayOptionsEditor({
 
   return (
     <div className="space-y-5">
-      <div>
-        <Label>Position</Label>
+      <Section title="Position & timing">
+        <div className="space-y-4">
+          <div className="grid grid-cols-4 gap-2">
+            {positions.map((pos) => {
+              const Icon = pos.icon;
+              const active = pos.value === value.position;
+              return (
+                <button
+                  key={pos.value}
+                  type="button"
+                  onClick={() => set("position", pos.value)}
+                  className={`flex flex-col items-center gap-1 rounded-lg border p-2.5 text-xs transition-colors ${
+                    active ? "border-indigo-500 bg-indigo-50 text-indigo-700" : "border-slate-200 text-slate-600 hover:border-slate-300"
+                  }`}
+                >
+                  <Icon className="h-4 w-4" strokeWidth={2} />
+                  {pos.label}
+                </button>
+              );
+            })}
+          </div>
+          <div>
+            <Label htmlFor="delaySeconds">Delay before showing (seconds)</Label>
+            <Input
+              id="delaySeconds"
+              type="number"
+              min={0}
+              max={600}
+              value={value.delaySeconds}
+              onChange={(e) => set("delaySeconds", Number(e.target.value) || 0)}
+              className="w-28"
+            />
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Theme & color">
+        <div className="space-y-4">
+          <div className="inline-flex rounded-lg border border-slate-200 p-0.5">
+            <button
+              type="button"
+              onClick={() => set("theme", "light")}
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                value.theme === "light" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
+              }`}
+            >
+              <Sun className="h-3.5 w-3.5" /> Light
+            </button>
+            <button
+              type="button"
+              onClick={() => set("theme", "dark")}
+              className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
+                value.theme === "dark" ? "bg-slate-900 text-white shadow-sm" : "text-slate-500"
+              }`}
+            >
+              <MoonStar className="h-3.5 w-3.5" /> Dark
+            </button>
+          </div>
+
+          <div>
+            <Label htmlFor="primaryColor">Brand color</Label>
+            <div className="flex items-center gap-2">
+              <input
+                aria-label="Brand color picker"
+                type="color"
+                value={value.primaryColor}
+                onChange={(e) => set("primaryColor", e.target.value)}
+                className="h-9 w-9 shrink-0 cursor-pointer rounded-md border border-slate-300 p-0.5"
+              />
+              <Input
+                id="primaryColor"
+                value={value.primaryColor}
+                onChange={(e) => set("primaryColor", e.target.value)}
+                className="w-28 font-mono text-xs"
+              />
+              <div className="flex gap-1.5">
+                {colorSwatches.map((c) => (
+                  <button
+                    key={c}
+                    type="button"
+                    aria-label={`Use ${c}`}
+                    onClick={() => set("primaryColor", c)}
+                    className="h-6 w-6 rounded-full border border-black/10"
+                    style={{ background: c }}
+                  />
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Section>
+
+      <Section title="Typography">
         <div className="grid grid-cols-4 gap-2">
-          {positions.map((pos) => {
-            const Icon = pos.icon;
-            const active = pos.value === value.position;
+          {fontOptions.map((opt) => {
+            const active = opt.value === value.fontFamily;
             return (
               <button
-                key={pos.value}
+                key={opt.value}
                 type="button"
-                onClick={() => set("position", pos.value)}
+                onClick={() => set("fontFamily", opt.value)}
                 className={`flex flex-col items-center gap-1 rounded-lg border p-2.5 text-xs transition-colors ${
                   active ? "border-indigo-500 bg-indigo-50 text-indigo-700" : "border-slate-200 text-slate-600 hover:border-slate-300"
                 }`}
               >
-                <Icon className="h-4 w-4" strokeWidth={2} />
-                {pos.label}
+                <CaseSensitive className="h-4 w-4" style={{ fontFamily: opt.stack }} strokeWidth={2} />
+                <span style={{ fontFamily: opt.stack }}>{opt.label}</span>
               </button>
             );
           })}
         </div>
-      </div>
+      </Section>
 
-      <div>
-        <Label>Theme</Label>
-        <div className="inline-flex rounded-lg border border-slate-200 p-0.5">
-          <button
-            type="button"
-            onClick={() => set("theme", "light")}
-            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-              value.theme === "light" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
-            }`}
-          >
-            <Sun className="h-3.5 w-3.5" /> Light
-          </button>
-          <button
-            type="button"
-            onClick={() => set("theme", "dark")}
-            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-              value.theme === "dark" ? "bg-slate-900 text-white shadow-sm" : "text-slate-500"
-            }`}
-          >
-            <MoonStar className="h-3.5 w-3.5" /> Dark
-          </button>
-        </div>
-      </div>
-
-      <div>
-        <Label htmlFor="primaryColor">Brand color</Label>
-        <div className="flex items-center gap-2">
-          <input
-            aria-label="Brand color picker"
-            type="color"
-            value={value.primaryColor}
-            onChange={(e) => set("primaryColor", e.target.value)}
-            className="h-9 w-9 shrink-0 cursor-pointer rounded-md border border-slate-300 p-0.5"
-          />
-          <Input
-            id="primaryColor"
-            value={value.primaryColor}
-            onChange={(e) => set("primaryColor", e.target.value)}
-            className="w-28 font-mono text-xs"
-          />
-          <div className="flex gap-1.5">
-            {colorSwatches.map((c) => (
-              <button
-                key={c}
-                type="button"
-                aria-label={`Use ${c}`}
-                onClick={() => set("primaryColor", c)}
-                className="h-6 w-6 rounded-full border border-black/10"
-                style={{ background: c }}
-              />
-            ))}
+      <Section title="Shape & shadow">
+        <div className="space-y-4">
+          <div>
+            <div className="mb-1.5 flex items-center justify-between">
+              <Label htmlFor="borderRadius">Corner radius</Label>
+              <span className="text-xs tabular-nums text-slate-400">{value.borderRadius}px</span>
+            </div>
+            <input
+              id="borderRadius"
+              type="range"
+              min={0}
+              max={24}
+              value={value.borderRadius}
+              onChange={(e) => set("borderRadius", Number(e.target.value))}
+              className="w-full accent-indigo-600"
+            />
+          </div>
+          <div>
+            <Label>Shadow</Label>
+            <SegmentedGroup options={shadowOptions} value={value.shadow} onChange={(v) => set("shadow", v)} />
           </div>
         </div>
-      </div>
+      </Section>
 
-      <div>
-        <Label htmlFor="delaySeconds">Delay before showing (seconds)</Label>
-        <Input
-          id="delaySeconds"
-          type="number"
-          min={0}
-          max={600}
-          value={value.delaySeconds}
-          onChange={(e) => set("delaySeconds", Number(e.target.value) || 0)}
-          className="w-28"
-        />
-      </div>
+      <Section title="Animation">
+        <Label>Entrance</Label>
+        <SegmentedGroup options={animationOptions} value={value.animation} onChange={(v) => set("animation", v)} />
+      </Section>
     </div>
   );
 }

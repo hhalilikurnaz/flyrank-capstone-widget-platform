@@ -1,10 +1,12 @@
+import { motion, type TargetAndTransition } from "framer-motion";
 import type { WidgetDraft } from "@/lib/types";
 
 /**
  * Pixel-for-pixel-ish replica of the real widget SDK's rendered output
  * (backend/src/widget-sdk/embed.ts). Kept in sync by hand — same box width,
- * radius, shadow, padding, and field styling — so what you see here is what
- * actually ships. Purely visual: no network calls, no real submission.
+ * radius, shadow, padding, field styling, font stacks, and entrance
+ * animation — so what you see here is what actually ships. Purely visual:
+ * no network calls, no real submission.
  */
 
 const positionStyle: Record<WidgetDraft["displayOptions"]["position"], React.CSSProperties> = {
@@ -14,95 +16,130 @@ const positionStyle: Record<WidgetDraft["displayOptions"]["position"], React.CSS
   inline: { position: "static", width: "100%", boxSizing: "border-box" },
 };
 
+// Mirrors backend/src/widget-sdk/embed.ts's FONT_STACKS / SHADOW_PRESETS.
+const FONT_STACKS: Record<Required<WidgetDraft["displayOptions"]>["fontFamily"], string> = {
+  system: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+  serif: 'Georgia, Cambria, "Times New Roman", serif',
+  rounded: '"SF Pro Rounded", ui-rounded, "Segoe UI", sans-serif',
+  mono: "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace",
+};
+
+const SHADOW_PRESETS: Record<Required<WidgetDraft["displayOptions"]>["shadow"], string> = {
+  none: "none",
+  soft: "0 4px 16px rgba(0,0,0,.10)",
+  medium: "0 10px 40px rgba(0,0,0,.18)",
+  strong: "0 24px 64px rgba(0,0,0,.32)",
+};
+
+const ANIMATION_VARIANTS: Record<
+  Required<WidgetDraft["displayOptions"]>["animation"],
+  { initial: TargetAndTransition; animate: TargetAndTransition }
+> = {
+  none: { initial: {}, animate: {} },
+  fade: { initial: { opacity: 0 }, animate: { opacity: 1 } },
+  "slide-up": { initial: { opacity: 0, y: 16 }, animate: { opacity: 1, y: 0 } },
+  bounce: { initial: { opacity: 0, scale: 0.85 }, animate: { opacity: 1, scale: 1 } },
+};
+
 function WidgetBox({ draft }: { draft: WidgetDraft }) {
-  const dark = draft.displayOptions.theme === "dark";
+  const opts = draft.displayOptions;
+  const dark = opts.theme === "dark";
   const bg = dark ? "#1a1a1a" : "#ffffff";
   const fg = dark ? "#f5f5f5" : "#1a1a1a";
   const border = dark ? "#333" : "#e2e2e2";
-  const color = draft.displayOptions.primaryColor || "#4f46e5";
+  const color = opts.primaryColor || "#4f46e5";
+  const radius = opts.borderRadius;
+  const fieldRadius = Math.max(4, Math.round(radius * 0.5));
+  const fontFamily = FONT_STACKS[opts.fontFamily];
+  const variant = ANIMATION_VARIANTS[opts.animation];
 
   return (
     <div
       style={{
-        ...positionStyle[draft.displayOptions.position],
-        width: draft.displayOptions.position === "inline" ? "100%" : 280,
+        ...positionStyle[opts.position],
+        width: opts.position === "inline" ? "100%" : 280,
         maxWidth: "calc(100% - 32px)",
         background: bg,
         color: fg,
         border: `1px solid ${border}`,
-        borderRadius: 12,
-        boxShadow: "0 10px 40px rgba(0,0,0,.18)",
-        padding: 18,
-        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-        fontSize: 13,
-        lineHeight: 1.4,
+        borderRadius: radius,
+        boxShadow: SHADOW_PRESETS[opts.shadow],
         zIndex: 1,
+        overflow: "hidden",
       }}
     >
-      {draft.displayOptions.position !== "inline" && (
-        <span style={{ position: "absolute", top: 8, right: 10, fontSize: 15, opacity: 0.6 }}>×</span>
-      )}
-      <p style={{ fontWeight: 600, fontSize: 15, margin: "0 0 4px" }}>{draft.title || "Untitled widget"}</p>
-      {draft.description && <p style={{ margin: "0 0 10px", opacity: 0.75 }}>{draft.description}</p>}
-
-      {draft.fields.map((field) => (
-        <div key={field.name} style={{ marginBottom: 8 }}>
-          <label style={{ display: "block", marginBottom: 3, fontSize: 11, opacity: 0.8 }}>
-            {field.label}
-            {field.required ? " *" : ""}
-          </label>
-          {field.type === "textarea" ? (
-            <textarea
-              readOnly
-              rows={2}
-              style={{
-                width: "100%",
-                boxSizing: "border-box",
-                padding: "6px 8px",
-                border: `1px solid ${border}`,
-                borderRadius: 6,
-                background: "transparent",
-                color: fg,
-                font: "inherit",
-                resize: "none",
-              }}
-            />
-          ) : (
-            <input
-              readOnly
-              type={field.type === "phone" ? "tel" : field.type}
-              style={{
-                width: "100%",
-                boxSizing: "border-box",
-                padding: "6px 8px",
-                border: `1px solid ${border}`,
-                borderRadius: 6,
-                background: "transparent",
-                color: fg,
-                font: "inherit",
-              }}
-            />
-          )}
-        </div>
-      ))}
-
-      <button
-        type="button"
-        style={{
-          width: "100%",
-          padding: 9,
-          border: "none",
-          borderRadius: 6,
-          background: color,
-          color: "#fff",
-          fontWeight: 600,
-          fontSize: 13,
-          font: "inherit",
-          cursor: "default",
-        }}
+      <motion.div
+        key={`${opts.animation}-${opts.position}-${opts.theme}-${radius}-${opts.shadow}-${opts.fontFamily}`}
+        initial={variant.initial}
+        animate={variant.animate}
+        transition={{ duration: 0.45, ease: "easeOut" }}
+        style={{ padding: 18, fontFamily, fontSize: 13, lineHeight: 1.4, position: "relative" }}
       >
-        {draft.buttonText || "Submit"}
-      </button>
+        {opts.position !== "inline" && (
+          <span style={{ position: "absolute", top: 8, right: 10, fontSize: 15, opacity: 0.6 }}>×</span>
+        )}
+        <p style={{ fontWeight: 600, fontSize: 15, margin: "0 0 4px" }}>{draft.title || "Untitled widget"}</p>
+        {draft.description && <p style={{ margin: "0 0 10px", opacity: 0.75 }}>{draft.description}</p>}
+
+        {draft.fields.map((field) => (
+          <div key={field.name} style={{ marginBottom: 8 }}>
+            <label style={{ display: "block", marginBottom: 3, fontSize: 11, opacity: 0.8 }}>
+              {field.label}
+              {field.required ? " *" : ""}
+            </label>
+            {field.type === "textarea" ? (
+              <textarea
+                readOnly
+                rows={2}
+                style={{
+                  width: "100%",
+                  boxSizing: "border-box",
+                  padding: "6px 8px",
+                  border: `1px solid ${border}`,
+                  borderRadius: fieldRadius,
+                  background: "transparent",
+                  color: fg,
+                  font: "inherit",
+                  resize: "none",
+                }}
+              />
+            ) : (
+              <input
+                readOnly
+                type={field.type === "phone" ? "tel" : field.type}
+                style={{
+                  width: "100%",
+                  boxSizing: "border-box",
+                  padding: "6px 8px",
+                  border: `1px solid ${border}`,
+                  borderRadius: fieldRadius,
+                  background: "transparent",
+                  color: fg,
+                  font: "inherit",
+                }}
+              />
+            )}
+          </div>
+        ))}
+
+        <button
+          type="button"
+          style={{
+            width: "100%",
+            padding: 9,
+            border: "none",
+            borderRadius: fieldRadius,
+            background: color,
+            color: "#fff",
+            fontWeight: 600,
+            fontSize: 13,
+            font: "inherit",
+            cursor: "default",
+          }}
+        >
+          {draft.buttonText || "Submit"}
+        </button>
+      </motion.div>
     </div>
   );
 }

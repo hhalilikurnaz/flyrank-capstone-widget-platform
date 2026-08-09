@@ -5,6 +5,10 @@ export const defaultDisplayOptions: WidgetDraft["displayOptions"] = {
   delaySeconds: 0,
   theme: "light",
   primaryColor: "#4f46e5",
+  fontFamily: "system",
+  borderRadius: 12,
+  shadow: "medium",
+  animation: "fade",
 };
 
 export const blankDraft: WidgetDraft = {

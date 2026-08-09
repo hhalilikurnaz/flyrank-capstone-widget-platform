@@ -12,6 +12,10 @@ export interface DisplayOptions {
   delaySeconds?: number;
   theme?: "light" | "dark";
   primaryColor?: string;
+  fontFamily?: "system" | "serif" | "rounded" | "mono";
+  borderRadius?: number;
+  shadow?: "none" | "soft" | "medium" | "strong";
+  animation?: "none" | "fade" | "slide-up" | "bounce";
 }
 
 export interface WidgetDraft {

@@ -14,6 +14,10 @@ const baseDisplayOptions = {
   delaySeconds: 0,
   theme: "light" as const,
   primaryColor: "#4f46e5",
+  fontFamily: "system" as const,
+  borderRadius: 12,
+  shadow: "medium" as const,
+  animation: "fade" as const,
 };
 
 export const blankTemplate: WidgetTemplate = {
@@ -57,7 +61,7 @@ export const widgetTemplates: WidgetTemplate[] = [
       description: "Sign up and we'll email you a code right away.",
       buttonText: "Claim my discount",
       fields: [{ name: "email", label: "Email", type: "email", required: true }],
-      displayOptions: { ...baseDisplayOptions, position: "bottom-right", primaryColor: "#e34948" },
+      displayOptions: { ...baseDisplayOptions, position: "bottom-right", primaryColor: "#e34948", animation: "bounce", borderRadius: 16 },
     },
   },
   {
@@ -74,7 +78,7 @@ export const widgetTemplates: WidgetTemplate[] = [
         { name: "email", label: "Email", type: "email", required: true },
         { name: "name", label: "Name", type: "text", required: false },
       ],
-      displayOptions: { ...baseDisplayOptions, position: "center", primaryColor: "#1baf7a" },
+      displayOptions: { ...baseDisplayOptions, position: "center", primaryColor: "#1baf7a", fontFamily: "rounded", borderRadius: 20 },
     },
   },
   {
@@ -91,7 +95,7 @@ export const widgetTemplates: WidgetTemplate[] = [
         { name: "email", label: "Email", type: "email", required: true },
         { name: "message", label: "Message", type: "textarea", required: true },
       ],
-      displayOptions: { ...baseDisplayOptions, position: "inline" },
+      displayOptions: { ...baseDisplayOptions, position: "inline", borderRadius: 8, shadow: "none" },
     },
   },
   {
@@ -105,7 +109,7 @@ export const widgetTemplates: WidgetTemplate[] = [
       description: "Here's 15% off if you complete your order today.",
       buttonText: "Get my code",
       fields: [{ name: "email", label: "Email", type: "email", required: true }],
-      displayOptions: { ...baseDisplayOptions, position: "center", delaySeconds: 8, primaryColor: "#eda100" },
+      displayOptions: { ...baseDisplayOptions, position: "center", delaySeconds: 8, primaryColor: "#eda100", shadow: "strong", animation: "slide-up" },
     },
   },
   {
@@ -122,7 +126,7 @@ export const widgetTemplates: WidgetTemplate[] = [
         { name: "name", label: "Full name", type: "text", required: true },
         { name: "email", label: "Email", type: "email", required: true },
       ],
-      displayOptions: { ...baseDisplayOptions, position: "bottom-left", primaryColor: "#4a3aa7" },
+      displayOptions: { ...baseDisplayOptions, position: "bottom-left", primaryColor: "#4a3aa7", fontFamily: "serif" },
     },
   },
 ];
