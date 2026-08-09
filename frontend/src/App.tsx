@@ -16,15 +16,13 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          {/* TODO(landing-routing): this becomes the public "/" once the
-              landing page is fully assembled; Dashboard moves to /dashboard. */}
-          <Route path="/landing-preview" element={<LandingPage />} />
+          <Route path="/" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
           <Route element={<ProtectedRoute />}>
             <Route element={<Layout />}>
-              <Route path="/" element={<DashboardPage />} />
+              <Route path="/dashboard" element={<DashboardPage />} />
               <Route path="/widgets" element={<WidgetsPage />} />
               <Route path="/widgets/new" element={<NewWidgetPage />} />
               <Route path="/widgets/:id" element={<WidgetDetailPage />} />

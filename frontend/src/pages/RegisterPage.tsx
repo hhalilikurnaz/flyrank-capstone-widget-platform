@@ -21,7 +21,7 @@ export function RegisterPage() {
     setSubmitting(true);
     try {
       await register(name, email, password);
-      navigate("/");
+      navigate("/dashboard");
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
     } finally {
