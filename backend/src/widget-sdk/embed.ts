@@ -22,6 +22,7 @@ interface WidgetConfig {
     position?: "bottom-right" | "bottom-left" | "center" | "inline";
     delaySeconds?: number;
     theme?: "light" | "dark";
+    primaryColor?: string;
   };
 }
 
@@ -121,6 +122,9 @@ function buildForm(config: WidgetConfig, apiBase: string, box: HTMLElement) {
   submitBtn.type = "submit";
   submitBtn.className = `${CLASS_PREFIX}-btn`;
   submitBtn.textContent = config.buttonText;
+  // Inline, not in the shared stylesheet: multiple differently-branded
+  // widgets can coexist on one page without one overwriting another's color.
+  submitBtn.style.background = config.displayOptions.primaryColor || "#4f46e5";
   form.appendChild(submitBtn);
 
   // Appended to the box, not the form: hiding the form on success must not

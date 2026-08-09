@@ -14,6 +14,10 @@ const displayOptionsSchema = z
     position: z.enum(["bottom-right", "bottom-left", "center", "inline"]).default("bottom-right"),
     delaySeconds: z.number().int().min(0).max(600).default(0),
     theme: z.enum(["light", "dark"]).default("light"),
+    primaryColor: z
+      .string()
+      .regex(/^#[0-9a-fA-F]{6}$/, "primaryColor must be a hex color like #4f46e5")
+      .optional(),
   })
   .partial()
   .default({});
