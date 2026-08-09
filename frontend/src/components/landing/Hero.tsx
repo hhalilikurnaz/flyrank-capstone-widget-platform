@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { WidgetBox } from "@/components/WidgetPreview";
+import { useAuth } from "@/context/AuthContext";
 import type { WidgetDraft } from "@/lib/types";
 
 const demoDraft: WidgetDraft = {
@@ -77,6 +78,7 @@ function Blob({ className, y }: { className: string; y: MotionValue<number> }) {
 }
 
 export function Hero() {
+  const { isAuthenticated } = useAuth();
   const parallax = useMotionValue(0);
   const blob1Y = useTransform(parallax, [0, 1], [0, -40]);
   const blob2Y = useTransform(parallax, [0, 1], [0, 30]);
@@ -109,17 +111,17 @@ export function Hero() {
           </p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Link
-              to="/register"
+              to={isAuthenticated ? "/dashboard" : "/register"}
               className="group inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-indigo-400"
             >
-              Start building free
+              {isAuthenticated ? "Go to dashboard" : "Start building free"}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
             <a href="#templates" className="text-sm font-medium text-slate-300 hover:text-white">
               Browse templates →
             </a>
           </div>
-          <p className="mt-6 text-xs text-slate-500">No credit card required · Free forever plan</p>
+          {!isAuthenticated && <p className="mt-6 text-xs text-slate-500">No credit card required · Free forever plan</p>}
         </motion.div>
 
         <motion.div

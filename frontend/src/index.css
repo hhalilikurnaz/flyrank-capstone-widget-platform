@@ -10,6 +10,18 @@ body,
   height: 100%;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+/* Anchor targets (landing page sections) sit under the fixed navbar —
+   without this, #features etc. would land flush against it. */
+#features,
+#templates,
+#faq {
+  scroll-margin-top: 88px;
+}
+
 body {
   margin: 0;
   @apply bg-slate-50 text-slate-900 antialiased;
