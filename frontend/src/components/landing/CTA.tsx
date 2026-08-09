@@ -2,9 +2,11 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function CTA() {
   const { isAuthenticated } = useAuth();
+  const { t } = useLanguage();
 
   return (
     <section className="relative overflow-hidden bg-slate-950 py-24">
@@ -17,16 +19,14 @@ export function CTA() {
         className="relative mx-auto max-w-2xl px-6 text-center"
       >
         <h2 className="text-3xl font-semibold tracking-tight text-white sm:text-4xl">
-          {isAuthenticated ? "Jump back into your dashboard" : "Ship your first widget in the next five minutes"}
+          {isAuthenticated ? t.cta.titleAuthed : t.cta.titleGuest}
         </h2>
-        <p className="mt-4 text-slate-400">
-          {isAuthenticated ? "Your widgets and analytics are right where you left them." : "Free forever plan. No credit card required."}
-        </p>
+        <p className="mt-4 text-slate-400">{isAuthenticated ? t.cta.subtitleAuthed : t.cta.subtitleGuest}</p>
         <Link
           to={isAuthenticated ? "/dashboard" : "/register"}
           className="group mt-8 inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-indigo-400"
         >
-          {isAuthenticated ? "Go to dashboard" : "Start building free"}
+          {isAuthenticated ? t.cta.ctaAuthed : t.cta.ctaGuest}
           <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
         </Link>
       </motion.div>

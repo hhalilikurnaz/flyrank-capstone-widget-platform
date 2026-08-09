@@ -3,6 +3,8 @@ import { Palette, ShieldCheck, LayoutTemplate as TemplateIcon, BarChart3 } from 
 import { WidgetBox } from "@/components/WidgetPreview";
 import { BarList } from "@/components/charts/BarList";
 import { StatTile } from "@/components/charts/StatTile";
+import { useLanguage } from "@/context/LanguageContext";
+import type { Dictionary } from "@/lib/i18n/en";
 import type { WidgetDraft } from "@/lib/types";
 
 const demoDraft: WidgetDraft = {
@@ -82,13 +84,7 @@ function TemplatesDemo() {
   );
 }
 
-function ReliabilityDemo() {
-  const items = [
-    "CORS + preflight handled correctly",
-    "Rate limiting per IP & per widget",
-    "Honeypot spam protection",
-    "IP → geo fallback chain (never fails)",
-  ];
+function ReliabilityDemo({ items }: { items: string[] }) {
   return (
     <div className="space-y-2.5 rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-800">
       {items.map((item) => (
@@ -103,53 +99,63 @@ function ReliabilityDemo() {
   );
 }
 
-const features = [
-  {
-    id: "builder",
-    icon: Palette,
-    eyebrow: "Widget builder",
-    title: "Customize every pixel, see it live",
-    description:
-      "Font, radius, shadow, brand color, entrance animation, position — every change updates a real, pixel-accurate preview instantly, on desktop, tablet, and mobile.",
-    demo: <BuilderDemo />,
-  },
-  {
-    id: "templates",
-    icon: TemplateIcon,
-    eyebrow: "Template marketplace",
-    title: "Start from a proven layout",
-    description:
-      "Newsletter signups, discount CTAs, exit-intent popovers, event RSVPs — every template card is a live render, not a screenshot, so what you pick is exactly what you get.",
-    demo: <TemplatesDemo />,
-  },
-  {
-    id: "analytics-preview",
-    icon: BarChart3,
-    eyebrow: "Analytics",
-    title: "Know what's actually converting",
-    description:
-      "Submissions over time, per-widget performance, and geo breakdown from real IP enrichment — all in a dashboard that updates the moment a visitor submits.",
-    demo: <AnalyticsDemo />,
-  },
-  {
-    id: "reliability",
-    icon: ShieldCheck,
-    eyebrow: "Built for the open internet",
-    title: "Hardened against the traffic you don't control",
-    description:
-      "Your embed runs on sites you don't own. Every submission is validated, rate-limited, checked for spam, and enriched — with graceful degradation at every step.",
-    demo: <ReliabilityDemo />,
-  },
-];
+function useFeatures(t: Dictionary) {
+  return [
+    {
+      id: "builder",
+      icon: Palette,
+      eyebrow: t.features.items.builder.eyebrow,
+      title: t.features.items.builder.title,
+      description: t.features.items.builder.description,
+      demo: <BuilderDemo />,
+    },
+    {
+      id: "templates",
+      icon: TemplateIcon,
+      eyebrow: t.features.items.templates.eyebrow,
+      title: t.features.items.templates.title,
+      description: t.features.items.templates.description,
+      demo: <TemplatesDemo />,
+    },
+    {
+      id: "analytics-preview",
+      icon: BarChart3,
+      eyebrow: t.features.items.analytics.eyebrow,
+      title: t.features.items.analytics.title,
+      description: t.features.items.analytics.description,
+      demo: <AnalyticsDemo />,
+    },
+    {
+      id: "reliability",
+      icon: ShieldCheck,
+      eyebrow: t.features.items.reliability.eyebrow,
+      title: t.features.items.reliability.title,
+      description: t.features.items.reliability.description,
+      demo: (
+        <ReliabilityDemo
+          items={[
+            t.features.reliabilityList.cors,
+            t.features.reliabilityList.rateLimit,
+            t.features.reliabilityList.honeypot,
+            t.features.reliabilityList.geo,
+          ]}
+        />
+      ),
+    },
+  ];
+}
 
 export function FeatureShowcase() {
+  const { t } = useLanguage();
+  const features = useFeatures(t);
+
   return (
     <section id="features" className="bg-white py-28 dark:bg-slate-950">
       <div className="mx-auto max-w-6xl px-6">
         <motion.div {...fadeUp()} className="mx-auto max-w-2xl text-center">
-          <p className="text-sm font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-400">Everything you need</p>
+          <p className="text-sm font-semibold uppercase tracking-wide text-indigo-600 dark:text-indigo-400">{t.features.eyebrow}</p>
           <h2 className="mt-3 text-3xl font-semibold tracking-tight text-slate-900 sm:text-4xl dark:text-slate-100">
-            A complete lead-capture toolkit
+            {t.features.title}
           </h2>
         </motion.div>
 

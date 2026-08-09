@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { ApiError } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 import { Input, Label } from "@/components/ui/Input";
@@ -8,6 +9,7 @@ import { ErrorBanner } from "@/components/ui/Feedback";
 
 export function RegisterPage() {
   const { register } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -33,8 +35,8 @@ export function RegisterPage() {
     <div className="flex min-h-full items-center justify-center bg-slate-50 px-4 dark:bg-slate-950">
       <div className="w-full max-w-sm">
         <div className="mb-6 text-center">
-          <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">Widget Platform</p>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Create your account</p>
+          <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t.auth.brand}</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t.auth.register.subtitle}</p>
         </div>
         <form
           onSubmit={onSubmit}
@@ -42,15 +44,15 @@ export function RegisterPage() {
         >
           {error && <ErrorBanner message={error} />}
           <div>
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">{t.auth.register.name}</Label>
             <Input id="name" required value={name} onChange={(e) => setName(e.target.value)} autoComplete="name" />
           </div>
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t.auth.register.email}</Label>
             <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
           </div>
           <div>
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t.auth.register.password}</Label>
             <Input
               id="password"
               type="password"
@@ -60,16 +62,16 @@ export function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"
             />
-            <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">At least 8 characters.</p>
+            <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">{t.auth.register.passwordHint}</p>
           </div>
           <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting ? "Creating account..." : "Create account"}
+            {submitting ? t.auth.register.submitting : t.auth.register.submit}
           </Button>
         </form>
         <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
-          Already have an account?{" "}
+          {t.auth.register.haveAccount}{" "}
           <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
-            Sign in
+            {t.auth.register.signIn}
           </Link>
         </p>
       </div>

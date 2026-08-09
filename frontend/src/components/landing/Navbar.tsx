@@ -3,18 +3,21 @@ import { Link } from "react-router-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, Menu, Sparkles, X } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
-
-const links = [
-  { href: "#features", label: "Features" },
-  { href: "#templates", label: "Templates" },
-  { href: "#faq", label: "FAQ" },
-];
+import { LanguageToggle } from "@/components/ui/LanguageToggle";
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { isAuthenticated, tenant } = useAuth();
+  const { t } = useLanguage();
+
+  const links = [
+    { href: "#features", label: t.nav.features },
+    { href: "#templates", label: t.nav.templates },
+    { href: "#faq", label: t.nav.faq },
+  ];
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 8);
@@ -50,35 +53,37 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <LanguageToggle className="text-slate-300" />
           <ThemeToggle className="text-slate-300 hover:bg-white/10 hover:text-white" />
           {isAuthenticated ? (
             <Link
               to="/dashboard"
               className="group inline-flex items-center gap-1.5 rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition-transform hover:scale-105"
             >
-              Go to dashboard
+              {t.nav.goToDashboard}
               <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
             </Link>
           ) : (
             <>
               <Link to="/login" className="text-sm font-medium text-slate-300 hover:text-white">
-                Sign in
+                {t.nav.signIn}
               </Link>
               <Link
                 to="/register"
                 className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-slate-900 transition-transform hover:scale-105"
               >
-                Start free
+                {t.nav.startFree}
               </Link>
             </>
           )}
         </div>
 
         <div className="flex items-center gap-1 md:hidden">
+          <LanguageToggle className="text-slate-300" />
           <ThemeToggle className="text-slate-300 hover:bg-white/10 hover:text-white" />
           <button
             type="button"
-            aria-label={mobileOpen ? "Close menu" : "Open menu"}
+            aria-label={mobileOpen ? t.nav.closeMenu : t.nav.openMenu}
             onClick={() => setMobileOpen((v) => !v)}
             className="flex h-9 w-9 items-center justify-center rounded-lg text-white"
           >
@@ -114,7 +119,7 @@ export function Navbar() {
                     onClick={closeMobile}
                     className="rounded-lg bg-white px-4 py-2.5 text-center text-sm font-semibold text-slate-900"
                   >
-                    Go to dashboard{tenant ? ` — ${tenant.name}` : ""}
+                    {t.nav.goToDashboard}{tenant ? ` (${tenant.name})` : ""}
                   </Link>
                 ) : (
                   <>
@@ -123,14 +128,14 @@ export function Navbar() {
                       onClick={closeMobile}
                       className="rounded-lg px-4 py-2.5 text-center text-sm font-medium text-slate-300 hover:bg-white/5 hover:text-white"
                     >
-                      Sign in
+                      {t.nav.signIn}
                     </Link>
                     <Link
                       to="/register"
                       onClick={closeMobile}
                       className="rounded-lg bg-white px-4 py-2.5 text-center text-sm font-semibold text-slate-900"
                     >
-                      Start free
+                      {t.nav.startFree}
                     </Link>
                   </>
                 )}

@@ -1,25 +1,28 @@
 import { Link } from "react-router-dom";
 import { Sparkles } from "lucide-react";
-
-const columns = [
-  {
-    title: "Product",
-    links: [
-      { label: "Features", href: "#features" },
-      { label: "Templates", href: "#templates" },
-      { label: "FAQ", href: "#faq" },
-    ],
-  },
-  {
-    title: "Account",
-    links: [
-      { label: "Sign in", href: "/login" },
-      { label: "Create account", href: "/register" },
-    ],
-  },
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 export function Footer() {
+  const { t } = useLanguage();
+
+  const columns = [
+    {
+      title: t.footer.product,
+      links: [
+        { label: t.nav.features, href: "#features" },
+        { label: t.nav.templates, href: "#templates" },
+        { label: t.nav.faq, href: "#faq" },
+      ],
+    },
+    {
+      title: t.footer.account,
+      links: [
+        { label: t.nav.signIn, href: "/login" },
+        { label: t.footer.createAccount, href: "/register" },
+      ],
+    },
+  ];
+
   return (
     <footer className="bg-slate-950 py-14">
       <div className="mx-auto max-w-6xl px-6">
@@ -31,9 +34,7 @@ export function Footer() {
               </span>
               <span className="text-sm font-semibold">Widget Platform</span>
             </div>
-            <p className="mt-3 max-w-xs text-sm text-slate-500">
-              Embeddable widgets and lead capture, built for the open internet.
-            </p>
+            <p className="mt-3 max-w-xs text-sm text-slate-500">{t.footer.tagline}</p>
           </div>
 
           <div className="flex gap-16">
@@ -60,9 +61,7 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-white/10 pt-6 text-xs text-slate-500">
-          © {new Date().getFullYear()} Widget Platform. Built as a FlyRank Backend Track capstone project.
-        </div>
+        <div className="mt-12 border-t border-white/10 pt-6 text-xs text-slate-500">{t.footer.copyright(new Date().getFullYear())}</div>
       </div>
     </footer>
   );

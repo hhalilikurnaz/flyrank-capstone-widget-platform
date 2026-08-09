@@ -1,29 +1,7 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { ChevronDown } from "lucide-react";
-
-const faqs = [
-  {
-    q: "Does this work on any website?",
-    a: "Yes. The embed is a single <script> tag with zero dependencies — it works on any HTML page regardless of what it's built with, since your visitors' browser is a completely different origin than our API.",
-  },
-  {
-    q: "What happens if someone spams the form?",
-    a: "Every submission passes through rate limiting (per IP and per widget) and a honeypot check before it ever touches the database. Bots get a convincing-looking success response but nothing gets stored.",
-  },
-  {
-    q: "What if the geolocation provider goes down?",
-    a: "We try a primary provider, then a fallback, and if both fail the submission is still stored — just without location data. A dependency going down never loses a lead.",
-  },
-  {
-    q: "Can I customize how the widget looks?",
-    a: "Font, corner radius, shadow, brand color, entrance animation, and position — all from the builder, with a live preview that matches exactly what ships.",
-  },
-  {
-    q: "Is there a free plan?",
-    a: "Yes — Starter is free forever for one active widget and 500 submissions a month.",
-  },
-];
+import { useLanguage } from "@/context/LanguageContext";
 
 function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: boolean; onToggle: () => void }) {
   return (
@@ -53,6 +31,8 @@ function FaqItem({ q, a, open, onToggle }: { q: string; a: string; open: boolean
 
 export function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const { t } = useLanguage();
+  const faqs = Object.values(t.faq.items);
 
   return (
     <section id="faq" className="bg-slate-50 py-24 dark:bg-slate-900">
@@ -64,7 +44,7 @@ export function FAQ() {
           transition={{ duration: 0.5 }}
           className="text-center text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100"
         >
-          Frequently asked questions
+          {t.faq.title}
         </motion.h2>
 
         <div className="mt-10">

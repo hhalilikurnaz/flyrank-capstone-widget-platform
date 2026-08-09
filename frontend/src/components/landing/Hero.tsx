@@ -4,6 +4,7 @@ import { motion, useMotionValue, useSpring, useTransform, type MotionValue } fro
 import { ArrowRight, Sparkles } from "lucide-react";
 import { WidgetBox } from "@/components/WidgetPreview";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import type { WidgetDraft } from "@/lib/types";
 
 const demoDraft: WidgetDraft = {
@@ -79,6 +80,7 @@ function Blob({ className, y }: { className: string; y: MotionValue<number> }) {
 
 export function Hero() {
   const { isAuthenticated } = useAuth();
+  const { t } = useLanguage();
   const parallax = useMotionValue(0);
   const blob1Y = useTransform(parallax, [0, 1], [0, -40]);
   const blob2Y = useTransform(parallax, [0, 1], [0, 30]);
@@ -100,28 +102,26 @@ export function Hero() {
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
           <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-indigo-300">
-            <Sparkles className="h-3 w-3" /> Lead capture, fully embeddable
+            <Sparkles className="h-3 w-3" /> {t.hero.badge}
           </span>
           <h1 className="mt-5 text-4xl font-semibold tracking-tight text-white sm:text-5xl">
-            Turn any website into a <span className="text-indigo-400">lead-capture machine</span>
+            {t.hero.titleStart} <span className="text-indigo-400">{t.hero.titleHighlight}</span>
           </h1>
-          <p className="mt-5 max-w-lg text-lg text-slate-400">
-            Design a widget, copy one line of code, and start collecting signups — validated, spam-filtered, and
-            dashboarded automatically. No engineering team required.
-          </p>
+          <p className="mt-5 max-w-lg text-lg text-slate-400">{t.hero.subtitle}</p>
           <div className="mt-8 flex flex-wrap items-center gap-4">
             <Link
               to={isAuthenticated ? "/dashboard" : "/register"}
               className="group inline-flex items-center gap-2 rounded-lg bg-indigo-500 px-5 py-3 text-sm font-semibold text-white transition-colors hover:bg-indigo-400"
             >
-              {isAuthenticated ? "Go to dashboard" : "Start building free"}
+              {isAuthenticated ? t.hero.ctaAuthed : t.hero.ctaGuest}
               <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
-            <a href="#templates" className="text-sm font-medium text-slate-300 hover:text-white">
-              Browse templates →
+            <a href="#templates" className="group inline-flex items-center gap-1 text-sm font-medium text-slate-300 hover:text-white">
+              {t.hero.browseTemplates}
+              <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
             </a>
           </div>
-          {!isAuthenticated && <p className="mt-6 text-xs text-slate-500">No credit card required · Free forever plan</p>}
+          {!isAuthenticated && <p className="mt-6 text-xs text-slate-500">{t.hero.noCard}</p>}
         </motion.div>
 
         <motion.div

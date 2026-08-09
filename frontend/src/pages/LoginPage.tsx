@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { ApiError } from "@/lib/api";
 import { Button } from "@/components/ui/Button";
 import { Input, Label } from "@/components/ui/Input";
@@ -8,6 +9,7 @@ import { ErrorBanner } from "@/components/ui/Feedback";
 
 export function LoginPage() {
   const { login } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -32,8 +34,8 @@ export function LoginPage() {
     <div className="flex min-h-full items-center justify-center bg-slate-50 px-4 dark:bg-slate-950">
       <div className="w-full max-w-sm">
         <div className="mb-6 text-center">
-          <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">Widget Platform</p>
-          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Sign in to manage your widgets</p>
+          <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">{t.auth.brand}</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{t.auth.login.subtitle}</p>
         </div>
         <form
           onSubmit={onSubmit}
@@ -41,11 +43,11 @@ export function LoginPage() {
         >
           {error && <ErrorBanner message={error} />}
           <div>
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email">{t.auth.login.email}</Label>
             <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
           </div>
           <div>
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password">{t.auth.login.password}</Label>
             <Input
               id="password"
               type="password"
@@ -56,13 +58,13 @@ export function LoginPage() {
             />
           </div>
           <Button type="submit" className="w-full" disabled={submitting}>
-            {submitting ? "Signing in..." : "Sign in"}
+            {submitting ? t.auth.login.submitting : t.auth.login.submit}
           </Button>
         </form>
         <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
-          No account yet?{" "}
+          {t.auth.login.noAccount}{" "}
           <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
-            Create one
+            {t.auth.login.createOne}
           </Link>
         </p>
       </div>
