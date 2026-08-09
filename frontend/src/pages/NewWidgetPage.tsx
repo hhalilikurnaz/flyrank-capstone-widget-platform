@@ -1,9 +1,9 @@
 import { useState, type FormEvent } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { api, ApiError } from "@/lib/api";
 import type { Widget, WidgetDraft, WidgetField } from "@/lib/types";
 import { blankDraft } from "@/lib/widgetDraft";
-import type { WidgetTemplate } from "@/lib/templates";
+import { blankTemplate, widgetTemplates, type WidgetTemplate } from "@/lib/templates";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Input, Label, Textarea } from "@/components/ui/Input";
@@ -14,9 +14,16 @@ import { WidgetTypePicker } from "@/components/WidgetTypePicker";
 import { DisplayOptionsEditor } from "@/components/DisplayOptionsEditor";
 import { WidgetPreview } from "@/components/WidgetPreview";
 
+function initialDraft(templateId: string | null): WidgetDraft {
+  if (!templateId) return blankDraft;
+  const match = [...widgetTemplates, blankTemplate].find((t) => t.id === templateId);
+  return match?.draft ?? blankDraft;
+}
+
 export function NewWidgetPage() {
   const navigate = useNavigate();
-  const [draft, setDraft] = useState<WidgetDraft>(blankDraft);
+  const [searchParams] = useSearchParams();
+  const [draft, setDraft] = useState<WidgetDraft>(() => initialDraft(searchParams.get("template")));
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 

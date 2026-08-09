@@ -43,7 +43,7 @@ const ANIMATION_VARIANTS: Record<
   bounce: { initial: { opacity: 0, scale: 0.85 }, animate: { opacity: 1, scale: 1 } },
 };
 
-function WidgetBox({ draft }: { draft: WidgetDraft }) {
+export function WidgetBox({ draft, staticLayout }: { draft: WidgetDraft; staticLayout?: boolean }) {
   const opts = draft.displayOptions;
   const dark = opts.theme === "dark";
   const bg = dark ? "#1a1a1a" : "#ffffff";
@@ -54,12 +54,16 @@ function WidgetBox({ draft }: { draft: WidgetDraft }) {
   const fieldRadius = Math.max(4, Math.round(radius * 0.5));
   const fontFamily = FONT_STACKS[opts.fontFamily];
   const variant = ANIMATION_VARIANTS[opts.animation];
+  // Thumbnail/card contexts (e.g. the template marketplace) render this
+  // out of any positioned frame — ignore the configured position and just
+  // flow it in place, same as "inline".
+  const position: React.CSSProperties = staticLayout ? { position: "static" } : positionStyle[opts.position];
 
   return (
     <div
       style={{
-        ...positionStyle[opts.position],
-        width: opts.position === "inline" ? "100%" : 280,
+        ...position,
+        width: staticLayout || opts.position === "inline" ? "100%" : 280,
         maxWidth: "calc(100% - 32px)",
         background: bg,
         color: fg,
@@ -77,7 +81,7 @@ function WidgetBox({ draft }: { draft: WidgetDraft }) {
         transition={{ duration: 0.45, ease: "easeOut" }}
         style={{ padding: 18, fontFamily, fontSize: 13, lineHeight: 1.4, position: "relative" }}
       >
-        {opts.position !== "inline" && (
+        {!staticLayout && opts.position !== "inline" && (
           <span style={{ position: "absolute", top: 8, right: 10, fontSize: 15, opacity: 0.6 }}>×</span>
         )}
         <p style={{ fontWeight: 600, fontSize: 15, margin: "0 0 4px" }}>{draft.title || "Untitled widget"}</p>
