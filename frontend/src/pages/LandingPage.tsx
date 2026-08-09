@@ -4,7 +4,6 @@ import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
 import { FeatureShowcase } from "@/components/landing/FeatureShowcase";
 import { Testimonials } from "@/components/landing/Testimonials";
-import { Pricing } from "@/components/landing/Pricing";
 import { FAQ } from "@/components/landing/FAQ";
 import { CTA } from "@/components/landing/CTA";
 import { Footer } from "@/components/landing/Footer";
@@ -19,7 +18,6 @@ export function LandingPage() {
       <Hero />
       <FeatureShowcase />
       <Testimonials />
-      <Pricing />
       <FAQ />
       <CTA />
       <Footer />
