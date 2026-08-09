@@ -9,11 +9,12 @@ function dayKey(date: Date) {
 export async function getStats(tenantId: string, days = 30) {
   const since = new Date(Date.now() - days * DAY_MS);
 
-  const [total, today, widgetCount, perWidget, recent] = await Promise.all([
+  const [total, today, widgetCount, totalImpressions, performance, recent] = await Promise.all([
     dashboardRepository.countTotalSubmissions(tenantId),
     dashboardRepository.countSubmissionsSince(tenantId, new Date(Date.now() - DAY_MS)),
     dashboardRepository.countWidgets(tenantId),
-    dashboardRepository.submissionsPerWidget(tenantId),
+    dashboardRepository.countTotalImpressions(tenantId),
+    dashboardRepository.widgetPerformance(tenantId),
     dashboardRepository.submissionsSince(tenantId, since),
   ]);
 
@@ -33,13 +34,19 @@ export async function getStats(tenantId: string, days = 30) {
     totalSubmissions: total,
     submissionsLast24h: today,
     totalWidgets: widgetCount,
-    submissionsPerWidget: perWidget,
+    totalImpressions,
+    conversionRate: totalImpressions > 0 ? total / totalImpressions : 0,
+    submissionsPerWidget: performance,
     timeSeries,
   };
 }
 
 export function getGeoBreakdown(tenantId: string) {
   return dashboardRepository.geoBreakdown(tenantId);
+}
+
+export function getDeviceBreakdown(tenantId: string) {
+  return dashboardRepository.deviceBreakdown(tenantId);
 }
 
 export async function getSubmissions(tenantId: string, widgetId: string | undefined, page: number, pageSize: number) {

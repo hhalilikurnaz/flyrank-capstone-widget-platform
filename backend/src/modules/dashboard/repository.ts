@@ -12,19 +12,44 @@ export function countWidgets(tenantId: string) {
   return prisma.widget.count({ where: { tenantId } });
 }
 
-export async function submissionsPerWidget(tenantId: string) {
-  const grouped = await prisma.submission.groupBy({
-    by: ["widgetId"],
+export function countTotalImpressions(tenantId: string) {
+  return prisma.impression.count({ where: { tenantId } });
+}
+
+export async function widgetPerformance(tenantId: string) {
+  const [submissionGroups, impressionGroups, widgets] = await Promise.all([
+    prisma.submission.groupBy({ by: ["widgetId"], where: { tenantId }, _count: { _all: true } }),
+    prisma.impression.groupBy({ by: ["widgetId"], where: { tenantId }, _count: { _all: true } }),
+    prisma.widget.findMany({ where: { tenantId }, select: { id: true, title: true } }),
+  ]);
+
+  const submissionsById = new Map(submissionGroups.map((g) => [g.widgetId, g._count._all]));
+  const impressionsById = new Map(impressionGroups.map((g) => [g.widgetId, g._count._all]));
+
+  return widgets
+    .map((w) => {
+      const submissions = submissionsById.get(w.id) ?? 0;
+      const impressions = impressionsById.get(w.id) ?? 0;
+      return {
+        widgetId: w.id,
+        title: w.title,
+        submissions,
+        impressions,
+        conversionRate: impressions > 0 ? submissions / impressions : 0,
+      };
+    })
+    .filter((w) => w.submissions > 0 || w.impressions > 0)
+    .sort((a, b) => b.submissions - a.submissions);
+}
+
+export async function deviceBreakdown(tenantId: string) {
+  const grouped = await prisma.impression.groupBy({
+    by: ["device"],
     where: { tenantId },
     _count: { _all: true },
   });
-  const widgets = await prisma.widget.findMany({
-    where: { tenantId },
-    select: { id: true, title: true },
-  });
-  const titleById = new Map(widgets.map((w) => [w.id, w.title]));
   return grouped
-    .map((g) => ({ widgetId: g.widgetId, title: titleById.get(g.widgetId) ?? "Unknown", count: g._count._all }))
+    .map((g) => ({ device: g.device, count: g._count._all }))
     .sort((a, b) => b.count - a.count);
 }
 

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import type { Device } from "@/lib/device";
 import type { CreateWidgetInput, UpdateWidgetInput } from "./schema";
 
 export function listWidgets(tenantId: string) {
@@ -30,4 +31,8 @@ export function updateWidget(id: string, tenantId: string, input: UpdateWidgetIn
 
 export function deleteWidget(id: string, tenantId: string) {
   return prisma.widget.deleteMany({ where: { id, tenantId } });
+}
+
+export function createImpression(widgetId: string, tenantId: string, device: Device) {
+  return prisma.impression.create({ data: { widgetId, tenantId, device } });
 }

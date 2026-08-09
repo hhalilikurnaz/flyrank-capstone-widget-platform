@@ -13,6 +13,12 @@ enum WidgetType {
   POPOVER
 }
 
+enum Device {
+  DESKTOP
+  TABLET
+  MOBILE
+}
+
 model Tenant {
   id           String   @id @default(uuid())
   name         String
@@ -22,6 +28,7 @@ model Tenant {
 
   widgets     Widget[]
   submissions Submission[]
+  impressions Impression[]
 }
 
 model Widget {
@@ -39,8 +46,24 @@ model Widget {
   updatedAt      DateTime   @updatedAt
 
   submissions Submission[]
+  impressions Impression[]
 
   @@index([tenantId])
+}
+
+// One row per widget config fetch — i.e. once per real page load where the
+// widget SDK mounts. Powers impressions/conversion-rate/device-breakdown.
+model Impression {
+  id        String   @id @default(uuid())
+  widgetId  String
+  widget    Widget   @relation(fields: [widgetId], references: [id], onDelete: Cascade)
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  device    Device
+  createdAt DateTime @default(now())
+
+  @@index([widgetId, createdAt])
+  @@index([tenantId, createdAt])
 }
 
 model Submission {

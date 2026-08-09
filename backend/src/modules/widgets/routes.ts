@@ -3,6 +3,7 @@ import { asyncHandler } from "@/lib/asyncHandler";
 import { requireAuth } from "@/middleware/auth";
 import { appCors, publicCors } from "@/middleware/cors";
 import { AppError } from "@/lib/errors";
+import { detectDevice } from "@/lib/device";
 import { createWidgetSchema, updateWidgetSchema } from "./schema";
 import * as widgetService from "./service";
 import { buildEmbedSnippet } from "./embed";
@@ -22,6 +23,8 @@ widgetsRouter.get(
     if (!widget) {
       throw AppError.notFound("Widget not found or inactive");
     }
+
+    widgetService.recordImpressionSafely(widget.id, widget.tenantId, detectDevice(req.header("user-agent")));
 
     res.set("Cache-Control", "public, max-age=60");
     res.json({

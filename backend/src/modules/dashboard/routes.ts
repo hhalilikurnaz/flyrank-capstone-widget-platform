@@ -26,6 +26,14 @@ dashboardRouter.get(
 );
 
 dashboardRouter.get(
+  "/device-breakdown",
+  asyncHandler(async (req, res) => {
+    const breakdown = await dashboardService.getDeviceBreakdown(req.tenantId!);
+    res.json({ breakdown });
+  }),
+);
+
+dashboardRouter.get(
   "/submissions",
   asyncHandler(async (req, res) => {
     const { widgetId, page, pageSize } = listSubmissionsQuerySchema.parse(req.query);
