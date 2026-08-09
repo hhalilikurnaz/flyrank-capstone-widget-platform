@@ -14,16 +14,16 @@ export function BarList({ items, emptyLabel }: { items: BarListItem[]; emptyLabe
     <ul className="space-y-2.5">
       {items.map((item) => (
         <li key={item.label} className="flex items-center gap-3">
-          <span className="w-36 shrink-0 truncate text-sm text-slate-600" title={item.label}>
+          <span className="w-36 shrink-0 truncate text-sm text-slate-600 dark:text-slate-400" title={item.label}>
             {item.label}
           </span>
-          <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100">
+          <div className="h-2 flex-1 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
             <div
               className="h-full rounded-full bg-[#2a78d6]"
               style={{ width: `${Math.max(4, (item.value / max) * 100)}%` }}
             />
           </div>
-          <span className="w-8 shrink-0 text-right text-sm font-medium tabular-nums text-slate-900">{item.value}</span>
+          <span className="w-8 shrink-0 text-right text-sm font-medium tabular-nums text-slate-900 dark:text-slate-100">{item.value}</span>
         </li>
       ))}
     </ul>

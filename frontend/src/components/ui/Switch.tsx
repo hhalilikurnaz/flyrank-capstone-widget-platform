@@ -18,7 +18,7 @@ export function Switch({
       disabled={disabled}
       onClick={() => onChange(!checked)}
       className={`relative h-5 w-9 shrink-0 rounded-full transition-colors disabled:opacity-50 ${
-        checked ? "bg-indigo-600" : "bg-slate-200"
+        checked ? "bg-indigo-600" : "bg-slate-200 dark:bg-slate-700"
       }`}
     >
       <span

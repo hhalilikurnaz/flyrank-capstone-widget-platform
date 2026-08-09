@@ -1,4 +1,4 @@
-import { Calendar, Gift, Mail, MessageSquare, Timer, Users } from "lucide-react";
+import { Calendar, Crown, Gift, Handshake, Mail, MessageSquare, Timer, Users } from "lucide-react";
 import type { WidgetDraft } from "./types";
 
 export interface WidgetTemplate {
@@ -127,6 +127,54 @@ export const widgetTemplates: WidgetTemplate[] = [
         { name: "email", label: "Email", type: "email", required: true },
       ],
       displayOptions: { ...baseDisplayOptions, position: "bottom-left", primaryColor: "#4a3aa7", fontFamily: "serif" },
+    },
+  },
+  {
+    id: "referral",
+    name: "Referral rewards",
+    description: "Turn happy customers into your best acquisition channel.",
+    icon: Handshake,
+    draft: {
+      type: "CTA",
+      title: "Give 10 dollars, get 10 dollars",
+      description: "Invite a friend. When they order, you both get rewarded.",
+      buttonText: "Send my invite link",
+      fields: [{ name: "email", label: "Friend's email", type: "email", required: true }],
+      displayOptions: {
+        ...baseDisplayOptions,
+        position: "bottom-right",
+        primaryColor: "#e34ca0",
+        fontFamily: "rounded",
+        borderRadius: 22,
+        shadow: "strong",
+        animation: "bounce",
+      },
+    },
+  },
+  {
+    id: "vip-access",
+    name: "VIP early access",
+    description: "A dark, elevated invite for your best customers.",
+    icon: Crown,
+    draft: {
+      type: "POPOVER",
+      title: "You are invited",
+      description: "Exclusive early access, reserved for our most loyal customers.",
+      buttonText: "Claim my invite",
+      fields: [
+        { name: "name", label: "Full name", type: "text", required: true },
+        { name: "email", label: "Email", type: "email", required: true },
+      ],
+      displayOptions: {
+        ...baseDisplayOptions,
+        position: "center",
+        theme: "dark",
+        primaryColor: "#eda100",
+        fontFamily: "serif",
+        borderRadius: 14,
+        shadow: "strong",
+        animation: "slide-up",
+      },
     },
   },
 ];

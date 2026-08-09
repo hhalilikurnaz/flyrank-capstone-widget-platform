@@ -9,7 +9,10 @@ export function Spinner({ className = "" }: { className?: string }) {
 
 export function ErrorBanner({ message }: { message: string }) {
   return (
-    <div role="alert" className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+    <div
+      role="alert"
+      className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-400"
+    >
       {message}
     </div>
   );
@@ -25,9 +28,9 @@ export function EmptyState({
   action?: React.ReactNode;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-slate-300 px-6 py-16 text-center">
-      <p className="text-sm font-medium text-slate-900">{title}</p>
-      {description && <p className="max-w-sm text-sm text-slate-500">{description}</p>}
+    <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed border-slate-300 px-6 py-16 text-center dark:border-slate-700">
+      <p className="text-sm font-medium text-slate-900 dark:text-slate-100">{title}</p>
+      {description && <p className="max-w-sm text-sm text-slate-500 dark:text-slate-400">{description}</p>}
       {action}
     </div>
   );

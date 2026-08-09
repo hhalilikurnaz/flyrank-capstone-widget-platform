@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+/* Class-based dark mode (Tailwind v4 defaults to prefers-color-scheme) --
+   ThemeContext toggles .dark on <html>, so every dark: utility below
+   responds to that instead of only the OS setting. */
+@custom-variant dark (&:is(.dark, .dark *));
+
 @theme {
   --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 }
@@ -24,5 +29,5 @@ html {
 
 body {
   margin: 0;
-  @apply bg-slate-50 text-slate-900 antialiased;
+  @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
 }
