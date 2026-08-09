@@ -1,30 +1,32 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { api, ApiError } from "@/lib/api";
-import type { Widget, WidgetField, WidgetType } from "@/lib/types";
+import type { Widget, WidgetDraft, WidgetField } from "@/lib/types";
+import { blankDraft } from "@/lib/widgetDraft";
+import type { WidgetTemplate } from "@/lib/templates";
 import { Button } from "@/components/ui/Button";
 import { Card, CardHeader } from "@/components/ui/Card";
 import { Input, Label, Textarea } from "@/components/ui/Input";
 import { ErrorBanner } from "@/components/ui/Feedback";
 import { FieldBuilder } from "@/components/FieldBuilder";
-
-const typeOptions: { value: WidgetType; label: string }[] = [
-  { value: "SIGNUP", label: "Signup form" },
-  { value: "CTA", label: "Call to action" },
-  { value: "POPOVER", label: "Popover" },
-];
+import { TemplatePicker } from "@/components/TemplatePicker";
+import { WidgetTypePicker } from "@/components/WidgetTypePicker";
+import { DisplayOptionsEditor } from "@/components/DisplayOptionsEditor";
+import { WidgetPreview } from "@/components/WidgetPreview";
 
 export function NewWidgetPage() {
   const navigate = useNavigate();
-  const [type, setType] = useState<WidgetType>("SIGNUP");
-  const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
-  const [buttonText, setButtonText] = useState("Submit");
-  const [fields, setFields] = useState<WidgetField[]>([
-    { name: "email", label: "Email", type: "email", required: true },
-  ]);
+  const [draft, setDraft] = useState<WidgetDraft>(blankDraft);
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+
+  function patch<K extends keyof WidgetDraft>(key: K, value: WidgetDraft[K]) {
+    setDraft((d) => ({ ...d, [key]: value }));
+  }
+
+  function applyTemplate(template: WidgetTemplate) {
+    setDraft(template.draft);
+  }
 
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
@@ -32,11 +34,12 @@ export function NewWidgetPage() {
     setSubmitting(true);
     try {
       const res = await api.post<{ widget: Widget }>("/api/widgets", {
-        type,
-        title,
-        description: description || undefined,
-        buttonText,
-        fields,
+        type: draft.type,
+        title: draft.title,
+        description: draft.description || undefined,
+        buttonText: draft.buttonText,
+        fields: draft.fields,
+        displayOptions: draft.displayOptions,
       });
       navigate(`/widgets/${res.widget.id}`);
     } catch (err) {
@@ -47,62 +50,88 @@ export function NewWidgetPage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl">
+    <div>
       <Link to="/widgets" className="text-sm text-slate-500 hover:text-slate-800">
         ← Back to widgets
       </Link>
       <h1 className="mt-2 text-xl font-semibold text-slate-900">New widget</h1>
       <p className="mt-1 text-sm text-slate-500">Configure the form your visitors will see.</p>
 
-      <form onSubmit={onSubmit} className="mt-6">
-        <Card>
-          <CardHeader title="Details" />
-          <div className="space-y-4 p-5">
-            {error && <ErrorBanner message={error} />}
-            <div>
-              <Label htmlFor="type">Type</Label>
-              <select
-                id="type"
-                value={type}
-                onChange={(e) => setType(e.target.value as WidgetType)}
-                className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
-              >
-                {typeOptions.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <Label htmlFor="title">Title</Label>
-              <Input id="title" required value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Get 10% off your first order" />
-            </div>
-            <div>
-              <Label htmlFor="description">Description (optional)</Label>
-              <Textarea id="description" rows={2} value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Join our newsletter for exclusive deals" />
-            </div>
-            <div>
-              <Label htmlFor="buttonText">Button text</Label>
-              <Input id="buttonText" required value={buttonText} onChange={(e) => setButtonText(e.target.value)} />
-            </div>
-          </div>
-        </Card>
+      <form onSubmit={onSubmit} className="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+        <div className="space-y-6">
+          {error && <ErrorBanner message={error} />}
 
-        <Card className="mt-6">
-          <CardHeader title="Fields" subtitle="What visitors will fill in." />
-          <div className="p-5">
-            <FieldBuilder fields={fields} onChange={setFields} />
-          </div>
-        </Card>
+          <Card>
+            <CardHeader title="Start from a template" subtitle="Pick one to pre-fill everything below, or start blank." />
+            <div className="p-5">
+              <TemplatePicker onSelect={applyTemplate} />
+            </div>
+          </Card>
 
-        <div className="mt-6 flex justify-end gap-2">
-          <Button type="button" variant="secondary" onClick={() => navigate("/widgets")}>
-            Cancel
-          </Button>
-          <Button type="submit" disabled={submitting}>
-            {submitting ? "Creating..." : "Create widget"}
-          </Button>
+          <Card>
+            <CardHeader title="Type" />
+            <div className="p-5">
+              <WidgetTypePicker value={draft.type} onChange={(type) => patch("type", type)} />
+            </div>
+          </Card>
+
+          <Card>
+            <CardHeader title="Details" />
+            <div className="space-y-4 p-5">
+              <div>
+                <Label htmlFor="title">Title</Label>
+                <Input
+                  id="title"
+                  required
+                  value={draft.title}
+                  onChange={(e) => patch("title", e.target.value)}
+                  placeholder="Get 10% off your first order"
+                />
+              </div>
+              <div>
+                <Label htmlFor="description">Description (optional)</Label>
+                <Textarea
+                  id="description"
+                  rows={2}
+                  value={draft.description}
+                  onChange={(e) => patch("description", e.target.value)}
+                  placeholder="Join our newsletter for exclusive deals"
+                />
+              </div>
+              <div>
+                <Label htmlFor="buttonText">Button text</Label>
+                <Input id="buttonText" required value={draft.buttonText} onChange={(e) => patch("buttonText", e.target.value)} />
+              </div>
+            </div>
+          </Card>
+
+          <Card>
+            <CardHeader title="Fields" subtitle="What visitors will fill in." />
+            <div className="p-5">
+              <FieldBuilder fields={draft.fields} onChange={(fields: WidgetField[]) => patch("fields", fields)} />
+            </div>
+          </Card>
+
+          <Card>
+            <CardHeader title="Design" subtitle="Position, theme, brand color, and timing." />
+            <div className="p-5">
+              <DisplayOptionsEditor value={draft.displayOptions} onChange={(opts) => patch("displayOptions", opts)} />
+            </div>
+          </Card>
+
+          <div className="flex justify-end gap-2">
+            <Button type="button" variant="secondary" onClick={() => navigate("/widgets")}>
+              Cancel
+            </Button>
+            <Button type="submit" disabled={submitting}>
+              {submitting ? "Creating..." : "Create widget"}
+            </Button>
+          </div>
+        </div>
+
+        <div className="lg:sticky lg:top-8 lg:self-start">
+          <p className="mb-2 text-xs font-medium uppercase tracking-wide text-slate-400">Live preview</p>
+          <WidgetPreview draft={draft} />
         </div>
       </form>
     </div>

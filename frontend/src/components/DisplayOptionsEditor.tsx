@@ -77,13 +77,14 @@ export function DisplayOptionsEditor({
         <Label htmlFor="primaryColor">Brand color</Label>
         <div className="flex items-center gap-2">
           <input
-            id="primaryColor"
+            aria-label="Brand color picker"
             type="color"
             value={value.primaryColor}
             onChange={(e) => set("primaryColor", e.target.value)}
             className="h-9 w-9 shrink-0 cursor-pointer rounded-md border border-slate-300 p-0.5"
           />
           <Input
+            id="primaryColor"
             value={value.primaryColor}
             onChange={(e) => set("primaryColor", e.target.value)}
             className="w-28 font-mono text-xs"
