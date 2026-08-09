@@ -18,6 +18,12 @@ const displayOptionsSchema = z
       .string()
       .regex(/^#[0-9a-fA-F]{6}$/, "primaryColor must be a hex color like #4f46e5")
       .optional(),
+    // Web-safe stacks only — the widget SDK stays zero-dependency, so no
+    // external @import/Google Fonts request from a page we don't control.
+    fontFamily: z.enum(["system", "serif", "rounded", "mono"]).default("system"),
+    borderRadius: z.number().int().min(0).max(24).default(12),
+    shadow: z.enum(["none", "soft", "medium", "strong"]).default("medium"),
+    animation: z.enum(["none", "fade", "slide-up", "bounce"]).default("fade"),
   })
   .partial()
   .default({});
