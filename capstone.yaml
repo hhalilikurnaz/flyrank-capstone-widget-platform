@@ -1,6 +1,10 @@
 # Evaluator manifest — see README.md for human-readable setup instructions.
+# `run` boots Postgres + Mailpit, installs deps, applies migrations, and
+# starts the backend API (the surface every probe below hits). The
+# dashboard frontend is a separate process — see README.md's Setup section
+# (`npm run dev:frontend`) to also bring up the UI at frontend_url.
 name: flyrank-capstone-widget-platform
-run: docker compose up -d && npm install && npm run dev:backend
+run: docker compose up -d && npm install && npm run --workspace backend prisma:migrate:deploy && npm run dev:backend
 seed: npm run seed --workspace backend
 test: npm run test --workspace backend
 base_url: http://localhost:4000
@@ -17,6 +21,12 @@ endpoints:
   - method: POST
     path: /api/widgets
     auth: bearer
+  - method: PATCH
+    path: /api/widgets/:id
+    auth: bearer
+  - method: DELETE
+    path: /api/widgets/:id
+    auth: bearer
   - method: GET
     path: /api/widgets/:id/embed
     auth: bearer
@@ -28,4 +38,10 @@ endpoints:
     path: /api/submissions
   - method: GET
     path: /api/dashboard/stats
+    auth: bearer
+  - method: GET
+    path: /api/dashboard/geo-breakdown
+    auth: bearer
+  - method: GET
+    path: /api/dashboard/submissions
     auth: bearer

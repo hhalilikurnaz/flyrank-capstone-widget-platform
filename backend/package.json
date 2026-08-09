@@ -13,6 +13,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p src/widget-sdk/tsconfig.json",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
     "seed": "tsx prisma/seed.ts",
     "build:widget-sdk": "tsx src/widget-sdk/build.ts",
     "predev": "npm run build:widget-sdk",
