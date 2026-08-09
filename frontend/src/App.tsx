@@ -9,12 +9,16 @@ import { WidgetsPage } from "@/pages/WidgetsPage";
 import { NewWidgetPage } from "@/pages/NewWidgetPage";
 import { WidgetDetailPage } from "@/pages/WidgetDetailPage";
 import { TemplatesPage } from "@/pages/TemplatesPage";
+import { LandingPage } from "@/pages/LandingPage";
 
 export default function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
+          {/* TODO(landing-routing): this becomes the public "/" once the
+              landing page is fully assembled; Dashboard moves to /dashboard. */}
+          <Route path="/landing-preview" element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
