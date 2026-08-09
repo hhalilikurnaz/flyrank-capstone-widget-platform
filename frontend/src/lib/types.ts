@@ -58,15 +58,32 @@ export interface Submission {
   createdAt: string;
 }
 
+export interface WidgetPerformance {
+  widgetId: string;
+  title: string;
+  submissions: number;
+  impressions: number;
+  conversionRate: number;
+}
+
 export interface DashboardStats {
   totalSubmissions: number;
   submissionsLast24h: number;
   totalWidgets: number;
-  submissionsPerWidget: { widgetId: string; title: string; count: number }[];
+  totalImpressions: number;
+  conversionRate: number;
+  submissionsPerWidget: WidgetPerformance[];
   timeSeries: { date: string; count: number }[];
 }
 
 export interface GeoBreakdownEntry {
   country: string;
+  count: number;
+}
+
+export type DeviceType = "DESKTOP" | "TABLET" | "MOBILE";
+
+export interface DeviceBreakdownEntry {
+  device: DeviceType;
   count: number;
 }
