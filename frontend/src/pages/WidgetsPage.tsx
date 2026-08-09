@@ -49,8 +49,8 @@ export function WidgetsPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-xl font-semibold text-slate-900">Widgets</h1>
-          <p className="mt-1 text-sm text-slate-500">Create and manage your embeddable widgets.</p>
+          <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Widgets</h1>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Create and manage your embeddable widgets.</p>
         </div>
         <Link to="/widgets/new">
           <Button>New widget</Button>
@@ -75,7 +75,7 @@ export function WidgetsPage() {
           <Card>
             <table className="w-full text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400">
+                <tr className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400 dark:border-slate-800">
                   <th className="px-5 py-3 font-medium">Title</th>
                   <th className="px-5 py-3 font-medium">Type</th>
                   <th className="px-5 py-3 font-medium">Active</th>
@@ -87,17 +87,17 @@ export function WidgetsPage() {
                 {widgets.map((widget) => {
                   const Icon = typeIcons[widget.type];
                   return (
-                    <tr key={widget.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50">
+                    <tr key={widget.id} className="border-b border-slate-50 last:border-0 hover:bg-slate-50 dark:border-slate-800/60 dark:hover:bg-slate-800/40">
                       <td className="px-5 py-3">
                         <div className="flex items-center gap-2">
                           <span
                             className="h-2 w-2 shrink-0 rounded-full"
                             style={{ background: widget.displayOptions.primaryColor || "#4f46e5" }}
                           />
-                          <span className="font-medium text-slate-900">{widget.title}</span>
+                          <span className="font-medium text-slate-900 dark:text-slate-100">{widget.title}</span>
                         </div>
                       </td>
-                      <td className="px-5 py-3 text-slate-600">
+                      <td className="px-5 py-3 text-slate-600 dark:text-slate-400">
                         <div className="flex items-center gap-1.5">
                           <Icon className="h-3.5 w-3.5 text-slate-400" strokeWidth={2} />
                           {typeLabels[widget.type]}
@@ -111,9 +111,9 @@ export function WidgetsPage() {
                           label={`${widget.isActive ? "Deactivate" : "Activate"} ${widget.title}`}
                         />
                       </td>
-                      <td className="px-5 py-3 text-slate-500">{new Date(widget.createdAt).toLocaleDateString()}</td>
+                      <td className="px-5 py-3 text-slate-500 dark:text-slate-400">{new Date(widget.createdAt).toLocaleDateString()}</td>
                       <td className="px-5 py-3 text-right">
-                        <Link to={`/widgets/${widget.id}`} className="text-sm font-medium text-indigo-600 hover:text-indigo-500">
+                        <Link to={`/widgets/${widget.id}`} className="text-sm font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
                           Manage
                         </Link>
                       </td>

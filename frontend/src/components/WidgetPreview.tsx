@@ -162,31 +162,31 @@ export function WidgetPreview({ draft }: { draft: WidgetDraft }) {
   return (
     <div>
       <div className="mb-2 flex items-center justify-between">
-        <p className="text-xs font-medium uppercase tracking-wide text-slate-400">Preview</p>
+        <p className="text-xs font-medium uppercase tracking-wide text-slate-400 dark:text-slate-500">Preview</p>
         <DevicePreviewToggle value={device} onChange={setDevice} />
       </div>
 
-      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+      <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <div
           className="mx-auto overflow-hidden transition-[width] duration-300"
           style={{ width: `${FRAME_WIDTH[device]}%` }}
         >
-          <div className="flex items-center gap-1.5 border-b border-slate-100 bg-slate-50 px-3 py-2">
+          <div className="flex items-center gap-1.5 border-b border-slate-100 bg-slate-50 px-3 py-2 dark:border-slate-800 dark:bg-slate-800/60">
             <span className="h-2.5 w-2.5 rounded-full bg-red-300" />
             <span className="h-2.5 w-2.5 rounded-full bg-amber-300" />
             <span className="h-2.5 w-2.5 rounded-full bg-emerald-300" />
-            <span className="ml-2 flex-1 truncate rounded bg-white px-2 py-0.5 text-center text-[11px] text-slate-400 ring-1 ring-slate-200">
+            <span className="ml-2 flex-1 truncate rounded bg-white px-2 py-0.5 text-center text-[11px] text-slate-400 ring-1 ring-slate-200 dark:bg-slate-900 dark:text-slate-500 dark:ring-slate-700">
               yourwebsite.com
             </span>
           </div>
 
-          <div className="relative min-h-[340px] bg-[#f6f6f4] p-4">
+          <div className="relative min-h-[340px] bg-[#f6f6f4] p-4 dark:bg-slate-950/40">
             <div className="space-y-2 opacity-40">
-              <div className="h-3 w-2/3 rounded bg-slate-300" />
-              <div className="h-3 w-1/2 rounded bg-slate-300" />
-              <div className="mt-4 h-20 rounded bg-slate-200" />
-              <div className="h-3 w-5/6 rounded bg-slate-300" />
-              <div className="h-3 w-3/4 rounded bg-slate-300" />
+              <div className="h-3 w-2/3 rounded bg-slate-300 dark:bg-slate-700" />
+              <div className="h-3 w-1/2 rounded bg-slate-300 dark:bg-slate-700" />
+              <div className="mt-4 h-20 rounded bg-slate-200 dark:bg-slate-800" />
+              <div className="h-3 w-5/6 rounded bg-slate-300 dark:bg-slate-700" />
+              <div className="h-3 w-3/4 rounded bg-slate-300 dark:bg-slate-700" />
             </div>
 
             {isInline ? (

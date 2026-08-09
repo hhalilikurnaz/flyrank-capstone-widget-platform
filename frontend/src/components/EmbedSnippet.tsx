@@ -26,11 +26,11 @@ export function EmbedSnippet({ widgetId }: { widgetId: string }) {
     <Card>
       <CardHeader title="Embed snippet" subtitle="Paste this one line into any website." />
       <div className="p-5">
-        {error && <p className="text-sm text-red-600">{error}</p>}
-        {!error && !snippet && <p className="text-sm text-slate-400">Loading...</p>}
+        {error && <p className="text-sm text-red-600 dark:text-red-400">{error}</p>}
+        {!error && !snippet && <p className="text-sm text-slate-400 dark:text-slate-500">Loading...</p>}
         {snippet && (
           <div className="flex items-center gap-2">
-            <code className="flex-1 overflow-x-auto whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-xs text-slate-100">
+            <code className="flex-1 overflow-x-auto whitespace-nowrap rounded-lg bg-slate-900 px-3 py-2 text-xs text-slate-100 dark:bg-slate-800">
               {snippet}
             </code>
             <Button type="button" variant="secondary" onClick={copy}>

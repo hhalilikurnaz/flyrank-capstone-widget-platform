@@ -26,9 +26,9 @@ export function FieldBuilder({
   return (
     <div className="space-y-3">
       {fields.map((field, i) => (
-        <div key={i} className="flex flex-wrap items-end gap-2 rounded-lg border border-slate-200 p-3">
+        <div key={i} className="flex flex-wrap items-end gap-2 rounded-lg border border-slate-200 p-3 dark:border-slate-700">
           <div className="min-w-[120px] flex-1">
-            <label className="mb-1 block text-xs font-medium text-slate-500">Field name</label>
+            <label className="mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400">Field name</label>
             <Input
               value={field.name}
               onChange={(e) => updateField(i, { name: e.target.value })}
@@ -36,7 +36,7 @@ export function FieldBuilder({
             />
           </div>
           <div className="min-w-[120px] flex-1">
-            <label className="mb-1 block text-xs font-medium text-slate-500">Label</label>
+            <label className="mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400">Label</label>
             <Input
               value={field.label}
               onChange={(e) => updateField(i, { label: e.target.value })}
@@ -44,11 +44,11 @@ export function FieldBuilder({
             />
           </div>
           <div className="w-32">
-            <label className="mb-1 block text-xs font-medium text-slate-500">Type</label>
+            <label className="mb-1 block text-xs font-medium text-slate-500 dark:text-slate-400">Type</label>
             <select
               value={field.type}
               onChange={(e) => updateField(i, { type: e.target.value as WidgetField["type"] })}
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100"
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm focus:border-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
             >
               {fieldTypes.map((t) => (
                 <option key={t} value={t}>
@@ -57,7 +57,7 @@ export function FieldBuilder({
               ))}
             </select>
           </div>
-          <label className="flex items-center gap-1.5 pb-2 text-xs text-slate-600">
+          <label className="flex items-center gap-1.5 pb-2 text-xs text-slate-600 dark:text-slate-400">
             <input
               type="checkbox"
               checked={field.required}

@@ -30,13 +30,16 @@ export function RegisterPage() {
   }
 
   return (
-    <div className="flex min-h-full items-center justify-center bg-slate-50 px-4">
+    <div className="flex min-h-full items-center justify-center bg-slate-50 px-4 dark:bg-slate-950">
       <div className="w-full max-w-sm">
         <div className="mb-6 text-center">
-          <p className="text-lg font-semibold text-slate-900">Widget Platform</p>
-          <p className="mt-1 text-sm text-slate-500">Create your account</p>
+          <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">Widget Platform</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Create your account</p>
         </div>
-        <form onSubmit={onSubmit} className="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <form
+          onSubmit={onSubmit}
+          className="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+        >
           {error && <ErrorBanner message={error} />}
           <div>
             <Label htmlFor="name">Name</Label>
@@ -57,15 +60,15 @@ export function RegisterPage() {
               onChange={(e) => setPassword(e.target.value)}
               autoComplete="new-password"
             />
-            <p className="mt-1 text-xs text-slate-400">At least 8 characters.</p>
+            <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">At least 8 characters.</p>
           </div>
           <Button type="submit" className="w-full" disabled={submitting}>
             {submitting ? "Creating account..." : "Create account"}
           </Button>
         </form>
-        <p className="mt-4 text-center text-sm text-slate-500">
+        <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
           Already have an account?{" "}
-          <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500">
+          <Link to="/login" className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
             Sign in
           </Link>
         </p>

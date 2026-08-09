@@ -29,13 +29,16 @@ export function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-full items-center justify-center bg-slate-50 px-4">
+    <div className="flex min-h-full items-center justify-center bg-slate-50 px-4 dark:bg-slate-950">
       <div className="w-full max-w-sm">
         <div className="mb-6 text-center">
-          <p className="text-lg font-semibold text-slate-900">Widget Platform</p>
-          <p className="mt-1 text-sm text-slate-500">Sign in to manage your widgets</p>
+          <p className="text-lg font-semibold text-slate-900 dark:text-slate-100">Widget Platform</p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">Sign in to manage your widgets</p>
         </div>
-        <form onSubmit={onSubmit} className="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <form
+          onSubmit={onSubmit}
+          className="space-y-4 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900"
+        >
           {error && <ErrorBanner message={error} />}
           <div>
             <Label htmlFor="email">Email</Label>
@@ -56,9 +59,9 @@ export function LoginPage() {
             {submitting ? "Signing in..." : "Sign in"}
           </Button>
         </form>
-        <p className="mt-4 text-center text-sm text-slate-500">
+        <p className="mt-4 text-center text-sm text-slate-500 dark:text-slate-400">
           No account yet?{" "}
-          <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500">
+          <Link to="/register" className="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
             Create one
           </Link>
         </p>

@@ -39,7 +39,7 @@ export function DashboardPage() {
   if (stats.totalWidgets === 0) {
     return (
       <div>
-        <h1 className="text-xl font-semibold text-slate-900">Dashboard</h1>
+        <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Dashboard</h1>
         <div className="mt-6">
           <EmptyState
             title="No widgets yet"
@@ -57,8 +57,8 @@ export function DashboardPage() {
 
   return (
     <div>
-      <h1 className="text-xl font-semibold text-slate-900">Dashboard</h1>
-      <p className="mt-1 text-sm text-slate-500">How your widgets are performing.</p>
+      <h1 className="text-xl font-semibold text-slate-900 dark:text-slate-100">Dashboard</h1>
+      <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">How your widgets are performing.</p>
 
       <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
         <StatTile label="Impressions" value={stats.totalImpressions} />
@@ -84,7 +84,7 @@ export function DashboardPage() {
         ) : (
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400">
+              <tr className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400 dark:border-slate-800">
                 <th className="px-5 py-3 font-medium">Widget</th>
                 <th className="px-5 py-3 font-medium text-right">Impressions</th>
                 <th className="px-5 py-3 font-medium text-right">Submissions</th>
@@ -93,11 +93,11 @@ export function DashboardPage() {
             </thead>
             <tbody>
               {stats.submissionsPerWidget.map((w) => (
-                <tr key={w.widgetId} className="border-b border-slate-50 last:border-0">
-                  <td className="px-5 py-3 font-medium text-slate-900">{w.title}</td>
-                  <td className="px-5 py-3 text-right tabular-nums text-slate-600">{w.impressions}</td>
-                  <td className="px-5 py-3 text-right tabular-nums text-slate-600">{w.submissions}</td>
-                  <td className="px-5 py-3 text-right tabular-nums text-slate-900">{(w.conversionRate * 100).toFixed(1)}%</td>
+                <tr key={w.widgetId} className="border-b border-slate-50 last:border-0 dark:border-slate-800/60">
+                  <td className="px-5 py-3 font-medium text-slate-900 dark:text-slate-100">{w.title}</td>
+                  <td className="px-5 py-3 text-right tabular-nums text-slate-600 dark:text-slate-400">{w.impressions}</td>
+                  <td className="px-5 py-3 text-right tabular-nums text-slate-600 dark:text-slate-400">{w.submissions}</td>
+                  <td className="px-5 py-3 text-right tabular-nums text-slate-900 dark:text-slate-100">{(w.conversionRate * 100).toFixed(1)}%</td>
                 </tr>
               ))}
             </tbody>
@@ -129,7 +129,7 @@ export function DashboardPage() {
         ) : (
           <table className="w-full text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400">
+              <tr className="border-b border-slate-100 text-xs uppercase tracking-wide text-slate-400 dark:border-slate-800">
                 <th className="px-5 py-3 font-medium">Widget</th>
                 <th className="px-5 py-3 font-medium">Data</th>
                 <th className="px-5 py-3 font-medium">Location</th>
@@ -138,13 +138,13 @@ export function DashboardPage() {
             </thead>
             <tbody>
               {submissions.map((s) => (
-                <tr key={s.id} className="border-b border-slate-50 last:border-0">
-                  <td className="px-5 py-3 text-slate-900">{s.widgetTitle}</td>
-                  <td className="max-w-xs truncate px-5 py-3 text-slate-600">
+                <tr key={s.id} className="border-b border-slate-50 last:border-0 dark:border-slate-800/60">
+                  <td className="px-5 py-3 text-slate-900 dark:text-slate-100">{s.widgetTitle}</td>
+                  <td className="max-w-xs truncate px-5 py-3 text-slate-600 dark:text-slate-400">
                     {Object.values(s.data).join(", ")}
                   </td>
-                  <td className="px-5 py-3 text-slate-500">{s.country ? `${s.city ?? ""} ${s.country}`.trim() : "—"}</td>
-                  <td className="px-5 py-3 text-slate-500">{new Date(s.createdAt).toLocaleString()}</td>
+                  <td className="px-5 py-3 text-slate-500 dark:text-slate-400">{s.country ? `${s.city ?? ""} ${s.country}`.trim() : "—"}</td>
+                  <td className="px-5 py-3 text-slate-500 dark:text-slate-400">{new Date(s.createdAt).toLocaleString()}</td>
                 </tr>
               ))}
             </tbody>

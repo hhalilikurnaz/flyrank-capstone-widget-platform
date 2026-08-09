@@ -44,8 +44,8 @@ const animationOptions: { value: Required4["animation"]; label: string }[] = [
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="border-t border-slate-100 pt-5 first:border-t-0 first:pt-0">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400">{title}</p>
+    <div className="border-t border-slate-100 pt-5 first:border-t-0 first:pt-0 dark:border-slate-800">
+      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{title}</p>
       {children}
     </div>
   );
@@ -69,8 +69,8 @@ function SegmentedGroup<T extends string>({
           onClick={() => onChange(opt.value)}
           className={`rounded-md border px-2.5 py-1.5 text-xs font-medium transition-colors ${
             value === opt.value
-              ? "border-indigo-500 bg-indigo-50 text-indigo-700"
-              : "border-slate-200 text-slate-600 hover:border-slate-300"
+              ? "border-indigo-500 bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400"
+              : "border-slate-200 text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:text-slate-400 dark:hover:border-slate-600"
           }`}
         >
           {opt.label}
@@ -105,7 +105,9 @@ export function DisplayOptionsEditor({
                   type="button"
                   onClick={() => set("position", pos.value)}
                   className={`flex flex-col items-center gap-1 rounded-lg border p-2.5 text-xs transition-colors ${
-                    active ? "border-indigo-500 bg-indigo-50 text-indigo-700" : "border-slate-200 text-slate-600 hover:border-slate-300"
+                    active
+                      ? "border-indigo-500 bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400"
+                      : "border-slate-200 text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:text-slate-400 dark:hover:border-slate-600"
                   }`}
                 >
                   <Icon className="h-4 w-4" strokeWidth={2} />
@@ -131,12 +133,12 @@ export function DisplayOptionsEditor({
 
       <Section title="Theme & color">
         <div className="space-y-4">
-          <div className="inline-flex rounded-lg border border-slate-200 p-0.5">
+          <div className="inline-flex rounded-lg border border-slate-200 p-0.5 dark:border-slate-700">
             <button
               type="button"
               onClick={() => set("theme", "light")}
               className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                value.theme === "light" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500"
+                value.theme === "light" ? "bg-white text-slate-900 shadow-sm dark:bg-slate-700 dark:text-slate-100" : "text-slate-500 dark:text-slate-400"
               }`}
             >
               <Sun className="h-3.5 w-3.5" /> Light
@@ -145,7 +147,7 @@ export function DisplayOptionsEditor({
               type="button"
               onClick={() => set("theme", "dark")}
               className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-medium transition-colors ${
-                value.theme === "dark" ? "bg-slate-900 text-white shadow-sm" : "text-slate-500"
+                value.theme === "dark" ? "bg-slate-900 text-white shadow-sm" : "text-slate-500 dark:text-slate-400"
               }`}
             >
               <MoonStar className="h-3.5 w-3.5" /> Dark
@@ -160,7 +162,7 @@ export function DisplayOptionsEditor({
                 type="color"
                 value={value.primaryColor}
                 onChange={(e) => set("primaryColor", e.target.value)}
-                className="h-9 w-9 shrink-0 cursor-pointer rounded-md border border-slate-300 p-0.5"
+                className="h-9 w-9 shrink-0 cursor-pointer rounded-md border border-slate-300 p-0.5 dark:border-slate-600"
               />
               <Input
                 id="primaryColor"
@@ -195,7 +197,9 @@ export function DisplayOptionsEditor({
                 type="button"
                 onClick={() => set("fontFamily", opt.value)}
                 className={`flex flex-col items-center gap-1 rounded-lg border p-2.5 text-xs transition-colors ${
-                  active ? "border-indigo-500 bg-indigo-50 text-indigo-700" : "border-slate-200 text-slate-600 hover:border-slate-300"
+                  active
+                    ? "border-indigo-500 bg-indigo-50 text-indigo-700 dark:bg-indigo-500/10 dark:text-indigo-400"
+                    : "border-slate-200 text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:text-slate-400 dark:hover:border-slate-600"
                 }`}
               >
                 <CaseSensitive className="h-4 w-4" style={{ fontFamily: opt.stack }} strokeWidth={2} />

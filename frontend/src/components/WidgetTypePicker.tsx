@@ -19,12 +19,16 @@ export function WidgetTypePicker({ value, onChange }: { value: WidgetType; onCha
             type="button"
             onClick={() => onChange(opt.value)}
             className={`flex flex-col items-start gap-1.5 rounded-lg border p-3 text-left transition-colors ${
-              active ? "border-indigo-500 bg-indigo-50 ring-1 ring-indigo-500" : "border-slate-200 bg-white hover:border-slate-300"
+              active
+                ? "border-indigo-500 bg-indigo-50 ring-1 ring-indigo-500 dark:bg-indigo-500/10"
+                : "border-slate-200 bg-white hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:hover:border-slate-600"
             }`}
           >
-            <Icon className={`h-4 w-4 ${active ? "text-indigo-600" : "text-slate-500"}`} strokeWidth={2} />
-            <span className={`text-sm font-medium ${active ? "text-indigo-700" : "text-slate-900"}`}>{opt.label}</span>
-            <span className="text-xs leading-snug text-slate-500">{opt.description}</span>
+            <Icon className={`h-4 w-4 ${active ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500 dark:text-slate-400"}`} strokeWidth={2} />
+            <span className={`text-sm font-medium ${active ? "text-indigo-700 dark:text-indigo-400" : "text-slate-900 dark:text-slate-100"}`}>
+              {opt.label}
+            </span>
+            <span className="text-xs leading-snug text-slate-500 dark:text-slate-400">{opt.description}</span>
           </button>
         );
       })}

@@ -44,7 +44,14 @@ export function DeviceDonut({ data, emptyLabel }: { data: DeviceBreakdownEntry[]
   return (
     <div className="flex items-center gap-6">
       <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} className="shrink-0" role="img" aria-label="Device breakdown">
-        <circle cx={SIZE / 2} cy={SIZE / 2} r={RADIUS} fill="none" stroke="#e1e0d9" strokeWidth={STROKE} />
+        <circle
+          cx={SIZE / 2}
+          cy={SIZE / 2}
+          r={RADIUS}
+          fill="none"
+          strokeWidth={STROKE}
+          className="stroke-slate-200 dark:stroke-slate-800"
+        />
         {ORDER.map((device) => {
           const count = byDevice.get(device) ?? 0;
           if (count === 0) return null;
@@ -71,10 +78,17 @@ export function DeviceDonut({ data, emptyLabel }: { data: DeviceBreakdownEntry[]
           offset += dash;
           return circle;
         })}
-        <text x={SIZE / 2} y={SIZE / 2 - 4} textAnchor="middle" fontSize={20} fontWeight={600} fill="#0b0b0b">
+        <text
+          x={SIZE / 2}
+          y={SIZE / 2 - 4}
+          textAnchor="middle"
+          fontSize={20}
+          fontWeight={600}
+          className="fill-slate-900 dark:fill-slate-100"
+        >
           {total}
         </text>
-        <text x={SIZE / 2} y={SIZE / 2 + 14} textAnchor="middle" fontSize={10} fill="#898781">
+        <text x={SIZE / 2} y={SIZE / 2 + 14} textAnchor="middle" fontSize={10} className="fill-slate-500 dark:fill-slate-400">
           views
         </text>
       </svg>
@@ -88,8 +102,8 @@ export function DeviceDonut({ data, emptyLabel }: { data: DeviceBreakdownEntry[]
             <li key={device} className="flex items-center gap-2 text-sm">
               <span className="h-2.5 w-2.5 shrink-0 rounded-full" style={{ background: COLORS[device] }} />
               <Icon className="h-3.5 w-3.5 text-slate-400" strokeWidth={2} />
-              <span className="text-slate-600">{LABELS[device]}</span>
-              <span className="ml-auto tabular-nums text-slate-900">{pct}%</span>
+              <span className="text-slate-600 dark:text-slate-400">{LABELS[device]}</span>
+              <span className="ml-auto tabular-nums text-slate-900 dark:text-slate-100">{pct}%</span>
             </li>
           );
         })}
