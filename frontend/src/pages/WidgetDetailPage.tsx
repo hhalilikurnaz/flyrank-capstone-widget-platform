@@ -10,6 +10,7 @@ import {
   FileText,
   Inbox,
   LayoutDashboard,
+  LayoutGrid,
   ListChecks,
   Palette,
   Settings as SettingsIcon,
@@ -331,7 +332,7 @@ export function WidgetDetailPage() {
               ) : (
                 <div className="space-y-6">
                   <Card>
-                    <CardHeader title="Type" />
+                    <CardHeader icon={LayoutGrid} title="Type" />
                     <div className="p-5">
                       <WidgetTypePicker value={draft.type} onChange={(type) => patch("type", type)} />
                     </div>

@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
-import { FileText, ListChecks, Palette, Sparkles, Wand2 } from "lucide-react";
+import { FileText, LayoutGrid, ListChecks, Palette, Sparkles, Wand2 } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import type { Widget, WidgetDraft, WidgetField } from "@/lib/types";
 import { blankDraft } from "@/lib/widgetDraft";
@@ -130,7 +130,7 @@ export function NewWidgetPage() {
           ) : (
             <div className="space-y-6">
               <Card>
-                <CardHeader title="Type" />
+                <CardHeader icon={LayoutGrid} title="Type" />
                 <div className="p-5">
                   <WidgetTypePicker value={draft.type} onChange={(type) => patch("type", type)} />
                 </div>

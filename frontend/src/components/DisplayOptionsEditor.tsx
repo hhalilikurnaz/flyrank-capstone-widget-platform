@@ -1,11 +1,16 @@
 import {
   AlignCenter,
   CaseSensitive,
+  Clock,
   CornerDownLeft,
   CornerDownRight,
   MoonStar,
+  Palette,
   Rows3,
+  Sparkles,
+  Square,
   Sun,
+  Type as TypeIcon,
 } from "lucide-react";
 import type { DisplayOptions } from "@/lib/types";
 import { Input, Label } from "@/components/ui/Input";
@@ -42,10 +47,21 @@ const animationOptions: { value: Required4["animation"]; label: string }[] = [
   { value: "bounce", label: "Bounce" },
 ];
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function Section({
+  title,
+  icon: Icon,
+  children,
+}: {
+  title: string;
+  icon: React.ComponentType<{ className?: string; strokeWidth?: number }>;
+  children: React.ReactNode;
+}) {
   return (
     <div className="border-t border-slate-100 pt-5 first:border-t-0 first:pt-0 dark:border-slate-800">
-      <p className="mb-3 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">{title}</p>
+      <p className="mb-3 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+        <Icon className="h-3.5 w-3.5" strokeWidth={2} />
+        {title}
+      </p>
       {children}
     </div>
   );
@@ -93,7 +109,7 @@ export function DisplayOptionsEditor({
 
   return (
     <div className="space-y-5">
-      <Section title="Position & timing">
+      <Section title="Position & timing" icon={Clock}>
         <div className="space-y-4">
           <div className="grid grid-cols-4 gap-2">
             {positions.map((pos) => {
@@ -131,7 +147,7 @@ export function DisplayOptionsEditor({
         </div>
       </Section>
 
-      <Section title="Theme & color">
+      <Section title="Theme & color" icon={Palette}>
         <div className="space-y-4">
           <div className="inline-flex rounded-lg border border-slate-200 p-0.5 dark:border-slate-700">
             <button
@@ -170,24 +186,29 @@ export function DisplayOptionsEditor({
                 onChange={(e) => set("primaryColor", e.target.value)}
                 className="w-28 font-mono text-xs"
               />
-              <div className="flex gap-1.5">
-                {colorSwatches.map((c) => (
-                  <button
-                    key={c}
-                    type="button"
-                    aria-label={`Use ${c}`}
-                    onClick={() => set("primaryColor", c)}
-                    className="h-6 w-6 rounded-full border border-black/10"
-                    style={{ background: c }}
-                  />
-                ))}
+              <div className="flex gap-2">
+                {colorSwatches.map((c) => {
+                  const active = c.toLowerCase() === value.primaryColor.toLowerCase();
+                  return (
+                    <button
+                      key={c}
+                      type="button"
+                      aria-label={`Use ${c}`}
+                      onClick={() => set("primaryColor", c)}
+                      className={`h-7 w-7 rounded-full ring-2 ring-offset-2 transition-transform ring-offset-white dark:ring-offset-slate-900 ${
+                        active ? "scale-110 ring-slate-900 dark:ring-white" : "ring-transparent hover:scale-105"
+                      }`}
+                      style={{ background: c }}
+                    />
+                  );
+                })}
               </div>
             </div>
           </div>
         </div>
       </Section>
 
-      <Section title="Typography">
+      <Section title="Typography" icon={TypeIcon}>
         <div className="grid grid-cols-4 gap-2">
           {fontOptions.map((opt) => {
             const active = opt.value === value.fontFamily;
@@ -210,22 +231,29 @@ export function DisplayOptionsEditor({
         </div>
       </Section>
 
-      <Section title="Shape & shadow">
+      <Section title="Shape & shadow" icon={Square}>
         <div className="space-y-4">
           <div>
             <div className="mb-1.5 flex items-center justify-between">
               <Label htmlFor="borderRadius">Corner radius</Label>
               <span className="text-xs tabular-nums text-slate-400">{value.borderRadius}px</span>
             </div>
-            <input
-              id="borderRadius"
-              type="range"
-              min={0}
-              max={24}
-              value={value.borderRadius}
-              onChange={(e) => set("borderRadius", Number(e.target.value))}
-              className="w-full accent-indigo-600"
-            />
+            <div className="flex items-center gap-3">
+              <input
+                id="borderRadius"
+                type="range"
+                min={0}
+                max={24}
+                value={value.borderRadius}
+                onChange={(e) => set("borderRadius", Number(e.target.value))}
+                className="w-full accent-indigo-600"
+              />
+              <span
+                className="h-8 w-8 shrink-0 border-2 border-indigo-400 dark:border-indigo-500"
+                style={{ borderRadius: value.borderRadius }}
+                aria-hidden="true"
+              />
+            </div>
           </div>
           <div>
             <Label>Shadow</Label>
@@ -234,7 +262,7 @@ export function DisplayOptionsEditor({
         </div>
       </Section>
 
-      <Section title="Animation">
+      <Section title="Animation" icon={Sparkles}>
         <Label>Entrance</Label>
         <SegmentedGroup options={animationOptions} value={value.animation} onChange={(v) => set("animation", v)} />
       </Section>
