@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Download, Search, X } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/Button";
 import { EmptyState, ErrorBanner, PageSpinner } from "@/components/ui/Feedback";
 
 const PAGE_SIZE = 50;
+const SEARCH_DEBOUNCE_MS = 300;
 
 function downloadCsv(csv: string, filename: string) {
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -33,8 +34,10 @@ export function SubmissionsTable({ widgetId, lockWidget }: { widgetId?: string; 
   const [items, setItems] = useState<Submission[] | null>(null);
   const [total, setTotal] = useState(0);
   const [query, setQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [detail, setDetail] = useState<Submission | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
     if (lockWidget) return;
@@ -48,6 +51,7 @@ export function SubmissionsTable({ widgetId, lockWidget }: { widgetId?: string; 
     setError(null);
     const params = new URLSearchParams({ page: String(page), pageSize: String(PAGE_SIZE) });
     if (selectedWidgetId) params.set("widgetId", selectedWidgetId);
+    if (debouncedQuery) params.set("q", debouncedQuery);
     api
       .get<{ items: Submission[]; total: number }>(`/api/dashboard/submissions?${params}`)
       .then((res) => {
@@ -55,17 +59,18 @@ export function SubmissionsTable({ widgetId, lockWidget }: { widgetId?: string; 
         setTotal(res.total);
       })
       .catch((err) => setError(err instanceof ApiError ? err.message : "Failed to load submissions"));
-  }, [page, selectedWidgetId]);
+  }, [page, selectedWidgetId, debouncedQuery]);
 
-  const filtered = useMemo(() => {
-    if (!items) return [];
-    const q = query.trim().toLowerCase();
-    if (!q) return items;
-    return items.filter((s) => {
-      const haystack = `${s.widgetTitle} ${JSON.stringify(s.data)} ${s.city ?? ""} ${s.country ?? ""}`.toLowerCase();
-      return haystack.includes(q);
-    });
-  }, [items, query]);
+  useEffect(() => () => clearTimeout(debounceRef.current), []);
+
+  function onQueryChange(next: string) {
+    setQuery(next);
+    clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setPage(1);
+      setDebouncedQuery(next.trim());
+    }, SEARCH_DEBOUNCE_MS);
+  }
 
   function onWidgetFilterChange(next: string) {
     setSelectedWidgetId(next);
@@ -73,8 +78,8 @@ export function SubmissionsTable({ widgetId, lockWidget }: { widgetId?: string; 
   }
 
   function exportCsv() {
-    if (filtered.length === 0) return;
-    downloadCsv(submissionsToCsv(filtered), `submissions-${new Date().toISOString().slice(0, 10)}.csv`);
+    if (!items || items.length === 0) return;
+    downloadCsv(submissionsToCsv(items), `submissions-${new Date().toISOString().slice(0, 10)}.csv`);
   }
 
   if (error) return <ErrorBanner message={error} />;
@@ -89,7 +94,7 @@ export function SubmissionsTable({ widgetId, lockWidget }: { widgetId?: string; 
           <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" strokeWidth={2} />
           <Input
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => onQueryChange(e.target.value)}
             placeholder="Search name, email, location..."
             className="pl-9"
           />
@@ -108,15 +113,22 @@ export function SubmissionsTable({ widgetId, lockWidget }: { widgetId?: string; 
             ))}
           </select>
         )}
-        <Button type="button" variant="secondary" onClick={exportCsv} disabled={filtered.length === 0}>
+        <Button type="button" variant="secondary" onClick={exportCsv} disabled={items.length === 0}>
           <Download className="h-3.5 w-3.5" /> Export CSV
         </Button>
       </div>
 
       <Card className="mt-4">
-        {filtered.length === 0 ? (
+        {items.length === 0 ? (
           <div className="p-5">
-            <EmptyState title="No submissions found" description="Leads will show up here once visitors start submitting your widgets." />
+            <EmptyState
+              title="No submissions found"
+              description={
+                debouncedQuery
+                  ? "No submissions match your search."
+                  : "Leads will show up here once visitors start submitting your widgets."
+              }
+            />
           </div>
         ) : (
           <table className="w-full text-left text-sm">
@@ -130,7 +142,7 @@ export function SubmissionsTable({ widgetId, lockWidget }: { widgetId?: string; 
               </tr>
             </thead>
             <tbody>
-              {filtered.map((s) => (
+              {items.map((s) => (
                 <tr
                   key={s.id}
                   onClick={() => setDetail(s)}
