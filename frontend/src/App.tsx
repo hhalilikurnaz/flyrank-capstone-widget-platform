@@ -10,6 +10,7 @@ import { DashboardPage } from "@/pages/DashboardPage";
 import { WidgetsPage } from "@/pages/WidgetsPage";
 import { NewWidgetPage } from "@/pages/NewWidgetPage";
 import { WidgetDetailPage } from "@/pages/WidgetDetailPage";
+import { SubmissionsPage } from "@/pages/SubmissionsPage";
 import { TemplatesPage } from "@/pages/TemplatesPage";
 import { LandingPage } from "@/pages/LandingPage";
 
@@ -30,6 +31,7 @@ export default function App() {
                   <Route path="/widgets" element={<WidgetsPage />} />
                   <Route path="/widgets/new" element={<NewWidgetPage />} />
                   <Route path="/widgets/:id" element={<WidgetDetailPage />} />
+                  <Route path="/submissions" element={<SubmissionsPage />} />
                   <Route path="/templates" element={<TemplatesPage />} />
                 </Route>
               </Route>

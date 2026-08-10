@@ -5,6 +5,7 @@ import { ThemeToggle } from "@/components/ui/ThemeToggle";
 const navItems = [
   { to: "/dashboard", label: "Dashboard", end: true },
   { to: "/widgets", label: "Widgets", end: false },
+  { to: "/submissions", label: "Submissions", end: false },
   { to: "/templates", label: "Templates", end: false },
 ];
 

@@ -56,7 +56,7 @@ export function NewWidgetPage() {
         fields: draft.fields,
         displayOptions: draft.displayOptions,
       });
-      navigate(`/widgets/${res.widget.id}`);
+      navigate(`/widgets/${res.widget.id}?tab=embed`, { state: { justCreated: true } });
     } catch (err) {
       setError(err instanceof ApiError ? err.message : "Failed to create widget");
     } finally {
