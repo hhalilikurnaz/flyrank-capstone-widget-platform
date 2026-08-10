@@ -20,11 +20,13 @@ enum Device {
 }
 
 model Tenant {
-  id           String   @id @default(uuid())
-  name         String
-  email        String   @unique
-  passwordHash String
-  createdAt    DateTime @default(now())
+  id                  String    @id @default(uuid())
+  name                String
+  email               String    @unique
+  passwordHash        String
+  createdAt           DateTime  @default(now())
+  resetTokenHash      String?
+  resetTokenExpiresAt DateTime?
 
   widgets     Widget[]
   submissions Submission[]
