@@ -1,6 +1,7 @@
 import { Navbar } from "@/components/landing/Navbar";
 import { Hero } from "@/components/landing/Hero";
 import { FeatureShowcase } from "@/components/landing/FeatureShowcase";
+import { HowItWorks } from "@/components/landing/HowItWorks";
 import { Testimonials } from "@/components/landing/Testimonials";
 import { FAQ } from "@/components/landing/FAQ";
 import { CTA } from "@/components/landing/CTA";
@@ -17,6 +18,7 @@ export function LandingPage() {
       <Navbar />
       <Hero />
       <FeatureShowcase />
+      <HowItWorks />
       <Testimonials />
       <FAQ />
       <CTA />

@@ -56,6 +56,26 @@ export const en = {
       geo: "IP to geo fallback chain that never fails",
     },
   },
+  howItWorks: {
+    eyebrow: "From zero to live",
+    title: "Three steps, no engineering required",
+    steps: {
+      design: {
+        title: "Design your widget",
+        description: "Pick a template or start blank. Set the copy, the fields, the color, and the font. The preview updates live.",
+      },
+      copy: {
+        title: "Copy one line of code",
+        description: "Every widget gets a single script tag. No build step, no package to install, no iframe to configure.",
+      },
+      live: {
+        title: "It's live on your site",
+        description: "Paste the snippet anywhere in your HTML. The widget renders with the exact styling you configured, nothing more to do.",
+      },
+    },
+    copySnippet: "Copy snippet",
+    copied: "Copied",
+  },
   testimonials: {
     title: "Loved by teams shipping fast",
     quotes: {

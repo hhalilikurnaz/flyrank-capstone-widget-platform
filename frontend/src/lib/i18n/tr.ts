@@ -58,6 +58,26 @@ export const tr: Dictionary = {
       geo: "Hiç başarısız olmayan IP'den konuma yedekli zincir",
     },
   },
+  howItWorks: {
+    eyebrow: "Sıfırdan yayına",
+    title: "Üç adım, mühendislik ekibi gerekmez",
+    steps: {
+      design: {
+        title: "Widget'ınızı tasarlayın",
+        description: "Bir şablon seçin ya da boştan başlayın. Metni, alanları, rengi ve yazı tipini ayarlayın. Önizleme anında güncellenir.",
+      },
+      copy: {
+        title: "Tek satır kodu kopyalayın",
+        description: "Her widget tek bir script etiketi alır. Derleme adımı yok, kurulacak paket yok, ayarlanacak iframe yok.",
+      },
+      live: {
+        title: "Sitenizde yayında",
+        description: "Kodu HTML'inizin herhangi bir yerine yapıştırın. Widget, tam olarak ayarladığınız stille görüntülenir, başka bir şey yapmanız gerekmez.",
+      },
+    },
+    copySnippet: "Kodu kopyala",
+    copied: "Kopyalandı",
+  },
   testimonials: {
     title: "Hızlı ilerleyen ekiplerin tercihi",
     quotes: {
