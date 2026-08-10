@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { asyncHandler } from "@/lib/asyncHandler";
 import { requireAuth } from "@/middleware/auth";
-import { listSubmissionsQuerySchema, statsQuerySchema } from "./schema";
+import { deviceBreakdownQuerySchema, listSubmissionsQuerySchema, statsQuerySchema } from "./schema";
 import * as dashboardService from "./service";
 
 export const dashboardRouter = Router();
@@ -11,8 +11,8 @@ dashboardRouter.use(requireAuth);
 dashboardRouter.get(
   "/stats",
   asyncHandler(async (req, res) => {
-    const { days } = statsQuerySchema.parse(req.query);
-    const stats = await dashboardService.getStats(req.tenantId!, days);
+    const { days, widgetId } = statsQuerySchema.parse(req.query);
+    const stats = await dashboardService.getStats(req.tenantId!, days, widgetId);
     res.json(stats);
   }),
 );
@@ -28,7 +28,8 @@ dashboardRouter.get(
 dashboardRouter.get(
   "/device-breakdown",
   asyncHandler(async (req, res) => {
-    const breakdown = await dashboardService.getDeviceBreakdown(req.tenantId!);
+    const { widgetId } = deviceBreakdownQuerySchema.parse(req.query);
+    const breakdown = await dashboardService.getDeviceBreakdown(req.tenantId!, widgetId);
     res.json({ breakdown });
   }),
 );

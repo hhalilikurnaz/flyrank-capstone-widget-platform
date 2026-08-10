@@ -6,16 +6,16 @@ function dayKey(date: Date) {
   return date.toISOString().slice(0, 10);
 }
 
-export async function getStats(tenantId: string, days = 30) {
+export async function getStats(tenantId: string, days = 30, widgetId?: string) {
   const since = new Date(Date.now() - days * DAY_MS);
 
   const [total, today, widgetCount, totalImpressions, performance, recent] = await Promise.all([
-    dashboardRepository.countTotalSubmissions(tenantId),
-    dashboardRepository.countSubmissionsSince(tenantId, new Date(Date.now() - DAY_MS)),
+    dashboardRepository.countTotalSubmissions(tenantId, widgetId),
+    dashboardRepository.countSubmissionsSince(tenantId, new Date(Date.now() - DAY_MS), widgetId),
     dashboardRepository.countWidgets(tenantId),
-    dashboardRepository.countTotalImpressions(tenantId),
+    dashboardRepository.countTotalImpressions(tenantId, widgetId),
     dashboardRepository.widgetPerformance(tenantId),
-    dashboardRepository.submissionsSince(tenantId, since),
+    dashboardRepository.submissionsSince(tenantId, since, widgetId),
   ]);
 
   const countsByDay = new Map<string, number>();
@@ -45,8 +45,8 @@ export function getGeoBreakdown(tenantId: string) {
   return dashboardRepository.geoBreakdown(tenantId);
 }
 
-export function getDeviceBreakdown(tenantId: string) {
-  return dashboardRepository.deviceBreakdown(tenantId);
+export function getDeviceBreakdown(tenantId: string, widgetId?: string) {
+  return dashboardRepository.deviceBreakdown(tenantId, widgetId);
 }
 
 export async function getSubmissions(tenantId: string, widgetId: string | undefined, page: number, pageSize: number) {

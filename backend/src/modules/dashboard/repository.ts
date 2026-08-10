@@ -1,19 +1,19 @@
 import { prisma } from "@/lib/prisma";
 
-export function countTotalSubmissions(tenantId: string) {
-  return prisma.submission.count({ where: { tenantId } });
+export function countTotalSubmissions(tenantId: string, widgetId?: string) {
+  return prisma.submission.count({ where: { tenantId, ...(widgetId ? { widgetId } : {}) } });
 }
 
-export function countSubmissionsSince(tenantId: string, since: Date) {
-  return prisma.submission.count({ where: { tenantId, createdAt: { gte: since } } });
+export function countSubmissionsSince(tenantId: string, since: Date, widgetId?: string) {
+  return prisma.submission.count({ where: { tenantId, createdAt: { gte: since }, ...(widgetId ? { widgetId } : {}) } });
 }
 
 export function countWidgets(tenantId: string) {
   return prisma.widget.count({ where: { tenantId } });
 }
 
-export function countTotalImpressions(tenantId: string) {
-  return prisma.impression.count({ where: { tenantId } });
+export function countTotalImpressions(tenantId: string, widgetId?: string) {
+  return prisma.impression.count({ where: { tenantId, ...(widgetId ? { widgetId } : {}) } });
 }
 
 export async function widgetPerformance(tenantId: string) {
@@ -42,10 +42,10 @@ export async function widgetPerformance(tenantId: string) {
     .sort((a, b) => b.submissions - a.submissions);
 }
 
-export async function deviceBreakdown(tenantId: string) {
+export async function deviceBreakdown(tenantId: string, widgetId?: string) {
   const grouped = await prisma.impression.groupBy({
     by: ["device"],
-    where: { tenantId },
+    where: { tenantId, ...(widgetId ? { widgetId } : {}) },
     _count: { _all: true },
   });
   return grouped
@@ -53,9 +53,9 @@ export async function deviceBreakdown(tenantId: string) {
     .sort((a, b) => b.count - a.count);
 }
 
-export function submissionsSince(tenantId: string, since: Date) {
+export function submissionsSince(tenantId: string, since: Date, widgetId?: string) {
   return prisma.submission.findMany({
-    where: { tenantId, createdAt: { gte: since } },
+    where: { tenantId, createdAt: { gte: since }, ...(widgetId ? { widgetId } : {}) },
     select: { createdAt: true },
   });
 }

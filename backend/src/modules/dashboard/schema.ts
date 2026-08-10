@@ -8,4 +8,9 @@ export const listSubmissionsQuerySchema = z.object({
 
 export const statsQuerySchema = z.object({
   days: z.coerce.number().int().min(1).max(90).default(30),
+  widgetId: z.string().uuid().optional(),
+});
+
+export const deviceBreakdownQuerySchema = z.object({
+  widgetId: z.string().uuid().optional(),
 });
