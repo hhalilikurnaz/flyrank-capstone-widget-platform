@@ -47,7 +47,12 @@ export function LoginPage() {
             <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} autoComplete="email" />
           </div>
           <div>
-            <Label htmlFor="password">{t.auth.login.password}</Label>
+            <div className="flex items-center justify-between">
+              <Label htmlFor="password">{t.auth.login.password}</Label>
+              <Link to="/forgot-password" className="text-xs font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300">
+                {t.auth.forgotPasswordLink}
+              </Link>
+            </div>
             <Input
               id="password"
               type="password"

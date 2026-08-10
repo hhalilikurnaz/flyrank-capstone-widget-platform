@@ -9,6 +9,8 @@ interface AuthContextValue {
   login: (email: string, password: string) => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<void>;
   logout: () => void;
+  setSession: (tenant: Tenant, token: string) => void;
+  updateTenant: (tenant: Tenant) => void;
 }
 
 const AuthContext = createContext<AuthContextValue | null>(null);
@@ -61,8 +63,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setTenant(null);
   }
 
+  // Used after a password reset (which returns a fresh token+tenant just
+  // like login/register) and after a profile update (which returns just
+  // the tenant, keeping the existing token).
+  function setSession(nextTenant: Tenant, token: string) {
+    persist(nextTenant, token);
+  }
+
+  function updateTenant(nextTenant: Tenant) {
+    localStorage.setItem(TENANT_KEY, JSON.stringify(nextTenant));
+    setTenant(nextTenant);
+  }
+
   const value = useMemo(
-    () => ({ tenant, isAuthenticated: !!tenant, loading, login, register, logout }),
+    () => ({ tenant, isAuthenticated: !!tenant, loading, login, register, logout, setSession, updateTenant }),
     [tenant, loading],
   );
 

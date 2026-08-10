@@ -161,6 +161,25 @@ export const en = {
       haveAccount: "Already have an account?",
       signIn: "Sign in",
     },
+    forgotPasswordLink: "Forgot password?",
+    forgotPassword: {
+      subtitle: "We will email you a link to reset your password.",
+      email: "Email",
+      submit: "Send reset link",
+      submitting: "Sending...",
+      successTitle: "Check your inbox",
+      successMessage: "If an account exists for that email, a reset link has been sent.",
+      backToLogin: "Back to sign in",
+    },
+    resetPassword: {
+      subtitle: "Choose a new password for your account.",
+      newPassword: "New password",
+      passwordHint: "At least 8 characters.",
+      submit: "Reset password",
+      submitting: "Resetting...",
+      invalidLink: "This reset link is missing information. Request a new one.",
+      backToLogin: "Back to sign in",
+    },
   },
 };
 

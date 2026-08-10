@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet } from "react-router-dom";
+import { Settings } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 
@@ -41,8 +42,20 @@ export function Layout() {
           ))}
         </nav>
         <div className="mt-auto border-t border-slate-100 px-5 py-4 dark:border-slate-800">
-          <p className="truncate text-xs font-medium text-slate-700 dark:text-slate-300">{tenant?.name}</p>
-          <p className="truncate text-xs text-slate-400 dark:text-slate-500">{tenant?.email}</p>
+          <div className="flex items-start justify-between gap-2">
+            <div className="min-w-0">
+              <p className="truncate text-xs font-medium text-slate-700 dark:text-slate-300">{tenant?.name}</p>
+              <p className="truncate text-xs text-slate-400 dark:text-slate-500">{tenant?.email}</p>
+            </div>
+            <Link
+              to="/settings"
+              aria-label="Settings"
+              title="Settings"
+              className="shrink-0 rounded-md p-1 text-slate-400 hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-800 dark:hover:text-slate-300"
+            >
+              <Settings className="h-4 w-4" strokeWidth={2} />
+            </Link>
+          </div>
           <button
             onClick={logout}
             className="mt-2 text-xs font-medium text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200"
