@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Download, Search, X } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
+import { submissionsToCsv } from "@/lib/csv";
 import type { Submission, Widget } from "@/lib/types";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -9,17 +10,6 @@ import { Button } from "@/components/ui/Button";
 import { EmptyState, ErrorBanner, PageSpinner } from "@/components/ui/Feedback";
 
 const PAGE_SIZE = 50;
-
-function toCsv(rows: Submission[]) {
-  const dataKeys = Array.from(new Set(rows.flatMap((r) => Object.keys(r.data))));
-  const header = ["Widget", ...dataKeys, "Location", "Date"];
-  const lines = rows.map((r) => {
-    const location = r.country ? `${r.city ?? ""} ${r.country}`.trim() : "";
-    const cells = [r.widgetTitle, ...dataKeys.map((k) => r.data[k] ?? ""), location, new Date(r.createdAt).toISOString()];
-    return cells.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(",");
-  });
-  return [header.join(","), ...lines].join("\n");
-}
 
 function downloadCsv(csv: string, filename: string) {
   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
@@ -84,7 +74,7 @@ export function SubmissionsTable({ widgetId, lockWidget }: { widgetId?: string; 
 
   function exportCsv() {
     if (filtered.length === 0) return;
-    downloadCsv(toCsv(filtered), `submissions-${new Date().toISOString().slice(0, 10)}.csv`);
+    downloadCsv(submissionsToCsv(filtered), `submissions-${new Date().toISOString().slice(0, 10)}.csv`);
   }
 
   if (error) return <ErrorBanner message={error} />;

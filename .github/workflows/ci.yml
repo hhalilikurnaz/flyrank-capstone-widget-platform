@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  push:
+    branches: [main, dev]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: widget_platform
+          POSTGRES_PASSWORD: widget_platform
+          POSTGRES_DB: widget_platform
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U widget_platform"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      NODE_ENV: test
+      DATABASE_URL: postgresql://widget_platform:widget_platform@localhost:5432/widget_platform
+      JWT_SECRET: ci-test-secret-please-change-in-prod
+      JWT_EXPIRES_IN: 7d
+      FRONTEND_URL: http://localhost:5173
+      PUBLIC_API_URL: http://localhost:4000
+      SMTP_HOST: localhost
+      SMTP_PORT: "1025"
+      SMTP_FROM: no-reply@widget-platform.local
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx prisma migrate deploy
+        working-directory: backend
+      - run: npm run typecheck --workspace backend
+      - run: npm run lint --workspace backend
+      - run: npm run test --workspace backend
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npx tsc -b --noEmit
+        working-directory: frontend
+      - run: npm run lint --workspace frontend
+      - run: npm run test --workspace frontend
+      - run: npm run build --workspace frontend
