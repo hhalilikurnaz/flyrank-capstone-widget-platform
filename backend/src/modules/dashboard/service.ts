@@ -49,8 +49,14 @@ export function getDeviceBreakdown(tenantId: string, widgetId?: string) {
   return dashboardRepository.deviceBreakdown(tenantId, widgetId);
 }
 
-export async function getSubmissions(tenantId: string, widgetId: string | undefined, page: number, pageSize: number) {
-  const { items, total } = await dashboardRepository.listSubmissions({ tenantId, widgetId, page, pageSize });
+export async function getSubmissions(
+  tenantId: string,
+  widgetId: string | undefined,
+  q: string | undefined,
+  page: number,
+  pageSize: number,
+) {
+  const { items, total } = await dashboardRepository.listSubmissions({ tenantId, widgetId, q, page, pageSize });
   return {
     items: items.map((s) => ({
       id: s.id,

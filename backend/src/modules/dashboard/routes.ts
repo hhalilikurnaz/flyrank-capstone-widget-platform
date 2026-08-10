@@ -37,8 +37,8 @@ dashboardRouter.get(
 dashboardRouter.get(
   "/submissions",
   asyncHandler(async (req, res) => {
-    const { widgetId, page, pageSize } = listSubmissionsQuerySchema.parse(req.query);
-    const result = await dashboardService.getSubmissions(req.tenantId!, widgetId, page, pageSize);
+    const { widgetId, q, page, pageSize } = listSubmissionsQuerySchema.parse(req.query);
+    const result = await dashboardService.getSubmissions(req.tenantId!, widgetId, q, page, pageSize);
     res.json(result);
   }),
 );

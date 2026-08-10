@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 export function countTotalSubmissions(tenantId: string, widgetId?: string) {
@@ -74,21 +75,76 @@ export async function geoBreakdown(tenantId: string) {
 interface ListSubmissionsParams {
   tenantId: string;
   widgetId?: string;
+  q?: string;
   page: number;
   pageSize: number;
 }
 
-export async function listSubmissions({ tenantId, widgetId, page, pageSize }: ListSubmissionsParams) {
-  const where = { tenantId, ...(widgetId ? { widgetId } : {}) };
-  const [items, total] = await Promise.all([
-    prisma.submission.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      skip: (page - 1) * pageSize,
-      take: pageSize,
-      include: { widget: { select: { title: true } } },
-    }),
-    prisma.submission.count({ where }),
+interface RawSubmissionRow {
+  id: string;
+  widgetId: string;
+  widgetTitle: string;
+  data: unknown;
+  country: string | null;
+  city: string | null;
+  createdAt: Date;
+}
+
+export async function listSubmissions({ tenantId, widgetId, q, page, pageSize }: ListSubmissionsParams) {
+  if (!q) {
+    const where = { tenantId, ...(widgetId ? { widgetId } : {}) };
+    const [items, total] = await Promise.all([
+      prisma.submission.findMany({
+        where,
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * pageSize,
+        take: pageSize,
+        include: { widget: { select: { title: true } } },
+      }),
+      prisma.submission.count({ where }),
+    ]);
+    return { items, total };
+  }
+
+  // The `data` JSON column has no fixed keys (they come from each widget's
+  // own field definitions), so Prisma's typed JSON filters can't search it
+  // generically. Casting to text and ILIKE-ing it is the pragmatic way to
+  // get a real substring search across arbitrary field values without
+  // knowing the key names up front.
+  const pattern = `%${q}%`;
+  const widgetFilter = widgetId ? Prisma.sql`AND s."widgetId" = ${widgetId}` : Prisma.empty;
+  const matchClause = Prisma.sql`(
+    s.data::text ILIKE ${pattern}
+    OR w.title ILIKE ${pattern}
+    OR s.country ILIKE ${pattern}
+    OR s.city ILIKE ${pattern}
+  )`;
+
+  const [rows, countRows] = await Promise.all([
+    prisma.$queryRaw<RawSubmissionRow[]>`
+      SELECT s.id, s."widgetId", w.title AS "widgetTitle", s.data, s.country, s.city, s."createdAt"
+      FROM "Submission" s
+      JOIN "Widget" w ON w.id = s."widgetId"
+      WHERE s."tenantId" = ${tenantId} ${widgetFilter} AND ${matchClause}
+      ORDER BY s."createdAt" DESC
+      LIMIT ${pageSize} OFFSET ${(page - 1) * pageSize}
+    `,
+    prisma.$queryRaw<{ count: bigint }[]>`
+      SELECT COUNT(*)::bigint AS count
+      FROM "Submission" s
+      JOIN "Widget" w ON w.id = s."widgetId"
+      WHERE s."tenantId" = ${tenantId} ${widgetFilter} AND ${matchClause}
+    `,
   ]);
-  return { items, total };
+
+  const items = rows.map((r) => ({
+    id: r.id,
+    widgetId: r.widgetId,
+    data: r.data,
+    country: r.country,
+    city: r.city,
+    createdAt: r.createdAt,
+    widget: { title: r.widgetTitle },
+  }));
+  return { items, total: Number(countRows[0]?.count ?? 0) };
 }

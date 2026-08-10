@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const listSubmissionsQuerySchema = z.object({
   widgetId: z.string().uuid().optional(),
+  q: z.string().trim().min(1).max(200).optional(),
   page: z.coerce.number().int().min(1).default(1),
   pageSize: z.coerce.number().int().min(1).max(100).default(20),
 });
