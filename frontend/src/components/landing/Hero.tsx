@@ -1,57 +1,86 @@
-import { useRef } from "react";
+import { useState } from "react";
 import { Link } from "react-router-dom";
-import { motion, useMotionValue, useSpring, useTransform, type MotionValue } from "framer-motion";
+import { motion, useMotionValue, useTransform, type MotionValue } from "framer-motion";
 import { ArrowRight, Sparkles } from "lucide-react";
 import { WidgetBox } from "@/components/WidgetPreview";
 import { useAuth } from "@/context/AuthContext";
 import { useLanguage } from "@/context/LanguageContext";
 import type { WidgetDraft } from "@/lib/types";
 
-const demoDraft: WidgetDraft = {
-  type: "CTA",
-  title: "Get 10% off your first order",
-  description: "Sign up and we'll email you a code right away.",
-  buttonText: "Claim my discount",
-  fields: [{ name: "email", label: "Email", type: "email", required: true }],
-  displayOptions: {
-    position: "bottom-right",
-    delaySeconds: 0,
-    theme: "light",
-    primaryColor: "#818cf8",
-    fontFamily: "system",
-    borderRadius: 16,
-    shadow: "strong",
-    animation: "fade",
+const CAROUSEL_DRAFTS: WidgetDraft[] = [
+  {
+    type: "CTA",
+    title: "Get 10% off your first order",
+    description: "Sign up and we'll email you a code right away.",
+    buttonText: "Claim my discount",
+    fields: [{ name: "email", label: "Email", type: "email", required: true }],
+    displayOptions: {
+      position: "inline",
+      delaySeconds: 0,
+      theme: "light",
+      primaryColor: "#818cf8",
+      fontFamily: "system",
+      borderRadius: 16,
+      shadow: "strong",
+      animation: "fade",
+    },
   },
-};
+  {
+    type: "SIGNUP",
+    title: "You are invited",
+    description: "Early access opens this week for the waitlist.",
+    buttonText: "Request access",
+    fields: [{ name: "email", label: "Email", type: "email", required: true }],
+    displayOptions: {
+      position: "inline",
+      delaySeconds: 0,
+      theme: "dark",
+      primaryColor: "#eda100",
+      fontFamily: "serif",
+      borderRadius: 12,
+      shadow: "medium",
+      animation: "slide-up",
+    },
+  },
+  {
+    type: "POPOVER",
+    title: "Before you go",
+    description: "Here is 15% off if you complete your order today.",
+    buttonText: "Get my code",
+    fields: [{ name: "email", label: "Email", type: "email", required: true }],
+    displayOptions: {
+      position: "inline",
+      delaySeconds: 0,
+      theme: "light",
+      primaryColor: "#1baf7a",
+      fontFamily: "rounded",
+      borderRadius: 20,
+      shadow: "soft",
+      animation: "bounce",
+    },
+  },
+  {
+    type: "SIGNUP",
+    title: "Give 10 dollars, get 10 dollars",
+    description: "Share your link and earn credit for every friend who joins.",
+    buttonText: "Get my link",
+    fields: [{ name: "email", label: "Email", type: "email", required: true }],
+    displayOptions: {
+      position: "inline",
+      delaySeconds: 0,
+      theme: "light",
+      primaryColor: "#e34ca0",
+      fontFamily: "rounded",
+      borderRadius: 22,
+      shadow: "strong",
+      animation: "fade",
+    },
+  },
+];
 
-function TiltCard() {
-  const ref = useRef<HTMLDivElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const rotateX = useSpring(useTransform(y, [-0.5, 0.5], [10, -10]), { stiffness: 200, damping: 20 });
-  const rotateY = useSpring(useTransform(x, [-0.5, 0.5], [-10, 10]), { stiffness: 200, damping: 20 });
-
-  function onMouseMove(e: React.MouseEvent<HTMLDivElement>) {
-    const rect = ref.current?.getBoundingClientRect();
-    if (!rect) return;
-    x.set((e.clientX - rect.left) / rect.width - 0.5);
-    y.set((e.clientY - rect.top) / rect.height - 0.5);
-  }
-
-  function onMouseLeave() {
-    x.set(0);
-    y.set(0);
-  }
-
+function CarouselCard({ draft }: { draft: WidgetDraft }) {
   return (
-    <motion.div
-      ref={ref}
-      onMouseMove={onMouseMove}
-      onMouseLeave={onMouseLeave}
-      style={{ rotateX, rotateY, transformPerspective: 1000 }}
-      className="relative w-full max-w-md rounded-2xl border border-white/10 bg-white/[.03] p-2 shadow-2xl backdrop-blur-sm"
-    >
+    <div className="h-full w-full rounded-2xl border border-white/10 bg-white/[.03] p-2 shadow-2xl backdrop-blur-sm">
       <div className="overflow-hidden rounded-xl bg-slate-50">
         <div className="flex items-center gap-1.5 border-b border-slate-200 bg-white px-3 py-2.5">
           <span className="h-2.5 w-2.5 rounded-full bg-red-300" />
@@ -61,16 +90,59 @@ function TiltCard() {
             yourstore.com
           </span>
         </div>
-        <div className="relative min-h-[280px] p-5">
+        <div className="relative min-h-[260px] p-5">
           <div className="space-y-2 opacity-40">
             <div className="h-3 w-2/3 rounded bg-slate-300" />
             <div className="h-3 w-1/2 rounded bg-slate-300" />
             <div className="mt-4 h-16 rounded bg-slate-200" />
           </div>
-          <WidgetBox draft={demoDraft} />
+          <WidgetBox draft={draft} />
         </div>
       </div>
-    </motion.div>
+    </div>
+  );
+}
+
+const CARD_WIDTH = 220;
+const RADIUS = 240;
+
+function WidgetCarousel() {
+  const [paused, setPaused] = useState(false);
+  const angleStep = 360 / CAROUSEL_DRAFTS.length;
+
+  return (
+    <div
+      className="relative w-full max-w-md overflow-hidden"
+      style={{ perspective: 1600, height: 340 }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+    >
+      <div
+        className="absolute left-1/2 top-1/2"
+        style={{ width: CARD_WIDTH, height: 300, marginLeft: -CARD_WIDTH / 2, marginTop: -150, transformStyle: "preserve-3d" }}
+      >
+        <motion.div
+          className="absolute inset-0"
+          style={{ transformStyle: "preserve-3d" }}
+          animate={{ rotateY: 360 }}
+          transition={{ duration: paused ? 90 : 26, repeat: Infinity, ease: "linear" }}
+        >
+          {CAROUSEL_DRAFTS.map((draft, i) => (
+            <div
+              key={draft.title}
+              className="absolute inset-0"
+              style={{
+                transform: `rotateY(${i * angleStep}deg) translateZ(${RADIUS}px)`,
+                backfaceVisibility: "hidden",
+                WebkitBackfaceVisibility: "hidden",
+              }}
+            >
+              <CarouselCard draft={draft} />
+            </div>
+          ))}
+        </motion.div>
+      </div>
+    </div>
   );
 }
 
@@ -130,7 +202,7 @@ export function Hero() {
           transition={{ duration: 0.7, ease: "easeOut", delay: 0.15 }}
           className="flex justify-center"
         >
-          <TiltCard />
+          <WidgetCarousel />
         </motion.div>
       </div>
     </section>
