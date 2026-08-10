@@ -80,7 +80,7 @@ export function NewWidgetPage() {
           {error && <ErrorBanner message={error} />}
 
           <Card>
-            <CardHeader icon={Wand2} title="Start from a template" subtitle="Pick one to pre-fill everything below, or start blank." />
+            <CardHeader icon={Wand2} title="Start from a template" subtitle="Pick one to fill in everything below, or start blank." />
             <div className="p-5">
               <TemplatePicker onSelect={applyTemplate} />
             </div>

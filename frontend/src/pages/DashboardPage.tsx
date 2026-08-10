@@ -43,7 +43,7 @@ export function DashboardPage() {
         <div className="mt-6">
           <EmptyState
             title="No widgets yet"
-            description="Create a widget to start collecting submissions — analytics will show up here once visitors start submitting."
+            description="Create a widget to start collecting submissions. Analytics will show up here once visitors start submitting."
             action={
               <Link to="/widgets/new">
                 <Button>New widget</Button>
@@ -143,7 +143,7 @@ export function DashboardPage() {
                   <td className="max-w-xs truncate px-5 py-3 text-slate-600 dark:text-slate-400">
                     {Object.values(s.data).join(", ")}
                   </td>
-                  <td className="px-5 py-3 text-slate-500 dark:text-slate-400">{s.country ? `${s.city ?? ""} ${s.country}`.trim() : "—"}</td>
+                  <td className="px-5 py-3 text-slate-500 dark:text-slate-400">{s.country ? `${s.city ?? ""} ${s.country}`.trim() : "Unknown"}</td>
                   <td className="px-5 py-3 text-slate-500 dark:text-slate-400">{new Date(s.createdAt).toLocaleString()}</td>
                 </tr>
               ))}

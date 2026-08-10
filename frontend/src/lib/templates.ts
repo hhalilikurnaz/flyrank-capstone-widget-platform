@@ -39,12 +39,12 @@ export const widgetTemplates: WidgetTemplate[] = [
   {
     id: "newsletter",
     name: "Newsletter signup",
-    description: "Grow an email list with a simple opt-in.",
+    description: "Grow an email list with a simple signup.",
     icon: Mail,
     draft: {
       type: "SIGNUP",
       title: "Join our newsletter",
-      description: "Get product updates and tips, once a week — no spam.",
+      description: "Get product updates and tips once a week. No spam.",
       buttonText: "Subscribe",
       fields: [{ name: "email", label: "Email", type: "email", required: true }],
       displayOptions: { ...baseDisplayOptions, position: "bottom-right" },
@@ -53,7 +53,7 @@ export const widgetTemplates: WidgetTemplate[] = [
   {
     id: "discount",
     name: "Discount offer",
-    description: "A CTA popup offering a first-purchase discount.",
+    description: "A CTA popup offering a discount on the first purchase.",
     icon: Gift,
     draft: {
       type: "CTA",
@@ -72,7 +72,7 @@ export const widgetTemplates: WidgetTemplate[] = [
     draft: {
       type: "SIGNUP",
       title: "Get early access",
-      description: "We're launching soon — join the waitlist to be first in line.",
+      description: "We're launching soon. Join the waitlist to be first in line.",
       buttonText: "Join waitlist",
       fields: [
         { name: "email", label: "Email", type: "email", required: true },
@@ -89,7 +89,7 @@ export const widgetTemplates: WidgetTemplate[] = [
     draft: {
       type: "SIGNUP",
       title: "Talk to us",
-      description: "Questions, bugs, feedback — we read everything.",
+      description: "Questions, bugs, feedback: we read everything.",
       buttonText: "Send message",
       fields: [
         { name: "email", label: "Email", type: "email", required: true },
@@ -100,8 +100,8 @@ export const widgetTemplates: WidgetTemplate[] = [
   },
   {
     id: "exit-intent",
-    name: "Exit-intent popover",
-    description: "A last-chance offer shown after a short delay.",
+    name: "Exit intent popover",
+    description: "A final chance offer shown after a short delay.",
     icon: Timer,
     draft: {
       type: "POPOVER",
@@ -115,12 +115,12 @@ export const widgetTemplates: WidgetTemplate[] = [
   {
     id: "rsvp",
     name: "Event RSVP",
-    description: "Collect RSVPs for a webinar or in-person event.",
+    description: "Collect RSVPs for a webinar or an in person event.",
     icon: Calendar,
     draft: {
       type: "SIGNUP",
       title: "Save your seat",
-      description: "Limited spots — reserve yours now.",
+      description: "Limited spots. Reserve yours now.",
       buttonText: "RSVP",
       fields: [
         { name: "name", label: "Full name", type: "text", required: true },

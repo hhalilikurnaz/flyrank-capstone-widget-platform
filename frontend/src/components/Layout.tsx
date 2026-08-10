@@ -17,7 +17,7 @@ export function Layout() {
         <div className="flex items-start justify-between px-5 py-5">
           <div>
             <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Widget Platform</p>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Lead-capture dashboard</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">Lead capture dashboard</p>
           </div>
           <ThemeToggle className="text-slate-500 hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800" />
         </div>
