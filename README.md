@@ -4,7 +4,11 @@
 
 Let a customer define a widget, hand them one line of `<script>`, and safely catch everything the public internet throws back — validated, spam-filtered, rate-limited, enriched, and dashboarded.
 
-**Status:** ✅ Ships — every core Definition-of-Done item is implemented and verified. See [EVIDENCE.md](./EVIDENCE.md) for proof, [DESIGN.md](./DESIGN.md) for the full architecture writeup, and [BUILDLOG.md](./BUILDLOG.md) for the AI-usage log.
+**Status:** ✅ Professional SaaS — all core features implemented + enterprise-grade enhancements. 
+
+**Capstone Status**: ✅ Ships — every core Definition-of-Done item verified in [EVIDENCE.md](./EVIDENCE.md)  
+**SaaS Enhancements**: ✅ Complete — API Keys, Data Export, Audit Logs, Webhooks. See [FEATURES.md](./FEATURES.md)  
+**Documentation**: ✅ Full — Architecture in [DESIGN.md](./DESIGN.md), Setup in [SETUP_GUIDE.md](./SETUP_GUIDE.md)
 
 ## What this is
 
@@ -96,6 +100,37 @@ The suite mocks the geo providers (deterministic, no network) but runs everythin
 | GET | `/api/dashboard/stats\|geo-breakdown\|submissions` | Bearer | tenant-scoped analytics |
 
 Full request/response shapes live in each module's `schema.ts` (Zod is the source of truth).
+
+## Professional Features (SaaS Enhancements)
+
+Beyond the core capstone, the platform includes enterprise-grade features:
+
+### ✅ API Keys
+- Create and manage API keys for programmatic access
+- Expiration dates and secure hashing
+- Track key usage and revoke compromised keys
+- Endpoints: GET/POST/PATCH/DELETE `/api/api-keys`
+
+### ✅ Data Export
+- Export submissions as CSV or JSON
+- Filter by widget and date range
+- Automatic file naming and download
+- Endpoint: POST `/api/exports/submissions`
+
+### ✅ Audit Logs
+- Track all account activity for compliance
+- Change tracking with before/after values
+- IP address capture and statistics
+- Endpoints: GET `/api/audit-logs`, `/api/audit-logs/stats`
+
+### ✅ Webhooks
+- Send real-time event notifications to external systems
+- Support for multiple events (submission.created, submission.flagged)
+- HMAC-SHA256 signature verification
+- Delivery logs and test functionality
+- Endpoints: GET/POST/PATCH/DELETE/test `/api/webhooks`
+
+**→ For detailed feature documentation, see [FEATURES.md](./FEATURES.md)**
 
 ## Honest limitations
 
