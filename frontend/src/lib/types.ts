@@ -87,3 +87,49 @@ export interface DeviceBreakdownEntry {
   device: DeviceType;
   count: number;
 }
+
+export interface ApiKey {
+  id: string;
+  name: string;
+  keyPreview: string;
+  lastUsedAt: string | null;
+  expiresAt: string | null;
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface CreateApiKeyResponse {
+  id: string;
+  name: string;
+  key: string;
+  keyPreview: string;
+  expiresAt: string | null;
+  createdAt: string;
+}
+
+export interface AuditLog {
+  id: string;
+  action: string;
+  entity: string;
+  entityId: string | null;
+  changes: Record<string, unknown> | null;
+  ipAddress: string | null;
+  createdAt: string;
+}
+
+export interface Webhook {
+  id: string;
+  url: string;
+  events: string[];
+  isActive: boolean;
+  createdAt: string;
+}
+
+export interface WebhookLog {
+  id: string;
+  event: string;
+  status: number | null;
+  error: string | null;
+  attempts: number;
+  createdAt: string;
+}

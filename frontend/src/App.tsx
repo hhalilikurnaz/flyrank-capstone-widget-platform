@@ -15,6 +15,9 @@ import { WidgetDetailPage } from "@/pages/WidgetDetailPage";
 import { SubmissionsPage } from "@/pages/SubmissionsPage";
 import { TemplatesPage } from "@/pages/TemplatesPage";
 import { SettingsPage } from "@/pages/SettingsPage";
+import { ApiKeysPage } from "@/pages/ApiKeysPage";
+import { AuditLogsPage } from "@/pages/AuditLogsPage";
+import { WebhooksPage } from "@/pages/WebhooksPage";
 import { LandingPage } from "@/pages/LandingPage";
 import { NotFoundPage } from "@/pages/NotFoundPage";
 
@@ -39,6 +42,9 @@ export default function App() {
                   <Route path="/widgets/:id" element={<WidgetDetailPage />} />
                   <Route path="/submissions" element={<SubmissionsPage />} />
                   <Route path="/templates" element={<TemplatesPage />} />
+                  <Route path="/api-keys" element={<ApiKeysPage />} />
+                  <Route path="/webhooks" element={<WebhooksPage />} />
+                  <Route path="/audit-logs" element={<AuditLogsPage />} />
                   <Route path="/settings" element={<SettingsPage />} />
                 </Route>
               </Route>

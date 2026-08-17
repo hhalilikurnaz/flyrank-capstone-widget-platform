@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Download, Search, X } from "lucide-react";
+import { Download, Search, X, ChevronDown } from "lucide-react";
 import { api, ApiError } from "@/lib/api";
 import { submissionsToCsv } from "@/lib/csv";
+import { exportSubmissions } from "@/lib/exports";
 import type { Submission, Widget } from "@/lib/types";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
@@ -37,6 +38,8 @@ export function SubmissionsTable({ widgetId, lockWidget }: { widgetId?: string; 
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [detail, setDetail] = useState<Submission | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [showExportMenu, setShowExportMenu] = useState(false);
+  const [exporting, setExporting] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
   useEffect(() => {
@@ -77,9 +80,28 @@ export function SubmissionsTable({ widgetId, lockWidget }: { widgetId?: string; 
     setPage(1);
   }
 
-  function exportCsv() {
+  async function handleExport(format: "csv" | "json") {
     if (!items || items.length === 0) return;
-    downloadCsv(submissionsToCsv(items), `submissions-${new Date().toISOString().slice(0, 10)}.csv`);
+
+    try {
+      setExporting(true);
+      setError(null);
+
+      if (format === "csv") {
+        downloadCsv(submissionsToCsv(items), `submissions-${new Date().toISOString().slice(0, 10)}.csv`);
+      } else {
+        await exportSubmissions({
+          format: "json",
+          widgetId: selectedWidgetId || undefined,
+        });
+      }
+
+      setShowExportMenu(false);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Export failed");
+    } finally {
+      setExporting(false);
+    }
   }
 
   if (error) return <ErrorBanner message={error} />;
@@ -113,9 +135,37 @@ export function SubmissionsTable({ widgetId, lockWidget }: { widgetId?: string; 
             ))}
           </select>
         )}
-        <Button type="button" variant="secondary" onClick={exportCsv} disabled={items.length === 0}>
-          <Download className="h-3.5 w-3.5" /> Export CSV
-        </Button>
+        <div className="relative">
+          <Button
+            type="button"
+            variant="secondary"
+            onClick={() => setShowExportMenu(!showExportMenu)}
+            disabled={items.length === 0 || exporting}
+            className="gap-1.5"
+          >
+            <Download className="h-3.5 w-3.5" />
+            Export
+            <ChevronDown className="h-3.5 w-3.5" />
+          </Button>
+          {showExportMenu && (
+            <div className="absolute right-0 mt-2 w-40 rounded-lg border border-slate-200 bg-white shadow-lg dark:border-slate-700 dark:bg-slate-800 z-10">
+              <button
+                onClick={() => handleExport("csv")}
+                disabled={exporting}
+                className="block w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700 first:rounded-t-lg disabled:opacity-50"
+              >
+                CSV
+              </button>
+              <button
+                onClick={() => handleExport("json")}
+                disabled={exporting}
+                className="block w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-700 last:rounded-b-lg disabled:opacity-50"
+              >
+                JSON
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <Card className="mt-4">

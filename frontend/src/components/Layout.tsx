@@ -8,6 +8,8 @@ const navItems = [
   { to: "/widgets", label: "Widgets", end: false },
   { to: "/submissions", label: "Submissions", end: false },
   { to: "/templates", label: "Templates", end: false },
+  { to: "/api-keys", label: "API Keys", end: false },
+  { to: "/webhooks", label: "Webhooks", end: false },
 ];
 
 export function Layout() {
