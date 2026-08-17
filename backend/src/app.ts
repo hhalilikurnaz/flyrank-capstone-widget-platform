@@ -7,6 +7,10 @@ import { widgetsRouter } from "@/modules/widgets/routes";
 import { submissionsRouter } from "@/modules/submissions/routes";
 import { deliveryRouter } from "@/modules/delivery/routes";
 import { dashboardRouter } from "@/modules/dashboard/routes";
+import { apiKeysRouter } from "@/modules/api-keys/routes";
+import { exportsRouter } from "@/modules/exports/routes";
+import { auditLogsRouter } from "@/modules/audit-logs/routes";
+import { webhooksRouter } from "@/modules/webhooks/routes";
 
 export function createApp() {
   const app = express();
@@ -33,6 +37,10 @@ export function createApp() {
   app.use("/api/widgets", widgetsRouter);
   app.use("/api/submissions", publicCors, submissionsRouter);
   app.use("/api/dashboard", appCors, dashboardRouter);
+  app.use("/api/api-keys", appCors, apiKeysRouter);
+  app.use("/api/exports", appCors, exportsRouter);
+  app.use("/api/audit-logs", appCors, auditLogsRouter);
+  app.use("/api/webhooks", appCors, webhooksRouter);
 
   app.use(notFoundHandler);
   app.use(errorHandler);
